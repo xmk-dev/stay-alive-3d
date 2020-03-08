@@ -1,7 +1,6 @@
 const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
@@ -21,7 +20,7 @@ module.exports = {
   },
   optimization: {
     minimize: true,
-    minimizer: [new TerserPlugin(), new CompressionPlugin(), new UglifyJsPlugin(), new HtmlWebpackPlugin(), new OptimizeCssAssetsPlugin()],
+    minimizer: [new TerserPlugin(), new CompressionPlugin(), new HtmlWebpackPlugin(), new OptimizeCssAssetsPlugin()],
   },
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
