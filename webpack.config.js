@@ -20,7 +20,17 @@ module.exports = {
   },
   optimization: {
     minimize: true,
-    minimizer: [new TerserPlugin(), new CompressionPlugin(), new HtmlWebpackPlugin(), new OptimizeCssAssetsPlugin()],
+    minimizer: [
+      new TerserPlugin(),
+      new CompressionPlugin(),
+      new OptimizeCssAssetsPlugin(),
+      new HtmlWebpackPlugin({
+        title: 'Stay Alive 3D',
+        meta: {
+          viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no',
+          filename: 'dist/index.html',
+        },
+      })],
   },
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
