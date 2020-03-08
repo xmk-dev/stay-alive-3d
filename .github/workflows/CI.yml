@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  schedule:
+    - cron:  '0 23 * * *'
+
+jobs:
+  install-test-lint-coverage:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - name: Install
+      run:
+        npm i
+    - name: Test Coverage
+      run:
+        npm run test-coverage
+    - name: ESLint
+      run:
+        npm run lint
+    - name: Deploy to Github Pages
+      if: success()
+      uses: crazy-max/ghaction-github-pages@v1
+      with:
+        target_branch: gh-pages
+        build_dir: dist
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
