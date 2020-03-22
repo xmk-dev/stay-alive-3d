@@ -1,3 +1,4 @@
-const { renderGame } = require('./game/main');
+const { runGame } = require('./game/main');
+require('./styles/main.css');
 
-renderGame(document.body);
+runGame(document.body);
