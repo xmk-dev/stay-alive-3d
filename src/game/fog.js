@@ -1,8 +1,8 @@
-const { Fog } = require('three');
-const { FOG: { COLOR, NEAR, FAR } } = require('./constants');
+const { FogExp2 } = require('three');
+const { FOG: { COLOR, DENSITY } } = require('./constants');
 
 const addFog = (scene) => {
-  const fog = new Fog(COLOR, NEAR, FAR);
+  const fog = new FogExp2(COLOR, DENSITY);
   scene.fog = fog;
 };
 
