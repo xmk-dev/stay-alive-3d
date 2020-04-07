@@ -1,7 +1,31 @@
 html,
 body {
+    font-family: 'Courier New', Courier, monospace;
     width: 100vw;
     height: 100vh;
     margin: 0;
     padding: 0;
+}
+
+#score {
+    z-index: 9999;
+    position: fixed;
+    width: 200px;
+    height: 100px;
+    top: 40px;
+    left: 40px;
+    border-radius: 20px;
+    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
+    text-align: center;
+    padding: 20px 0;
+}
+
+#score-value {
+    position: relative;
+    font-size: 60px;
+}
+
+#score-lifes {
+    position: relative;
+    font-size: 20px;
 }

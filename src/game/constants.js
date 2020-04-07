@@ -21,10 +21,6 @@ const EVENTS = {
 };
 
 const KEYS_CODES = {
-  KEY_W: 'KeyW',
-  KEY_A: 'KeyA',
-  KEY_S: 'KeyS',
-  KEY_D: 'KeyD',
   ARROW_UP: 'ArrowUp',
   ARROW_LEFT: 'ArrowLeft',
   ARROW_DOWN: 'ArrowDown',
@@ -32,24 +28,32 @@ const KEYS_CODES = {
   SPACE: 'Space',
 };
 
+const LANES = {
+  LEFT: -4,
+  CENTER: 0,
+  RIGHT: 4,
+};
+
 // models
 const HERO = {
-  RADIUS: 1,
-  SIDES: 10,
-  TIERS: 10,
+  RADIUS: 0.8,
+  SIDES: 8,
+  TIERS: 8,
   FLAT_SHADING: true,
   COLOR: COLORS.YELLOW,
   X: 0,
-  Y: 0,
-  Z: -5,
+  Y: -3,
+  Z: 0,
 };
 
 const GLOBE = {
   RADIUS: 30,
   SIDES: 30,
   TIERS: 30,
-  ROTATION_Z: -90,
-  MAX_HEIGHT: 1,
+  ROTATION_X: (0 * Math.PI) / 180,
+  ROTATION_Y: (0 * Math.PI) / 180,
+  ROTATION_Z: (90 * Math.PI) / 180,
+  MAX_HEIGHT: 0.8,
   FLAT_SHADING: true,
   COLOR: COLORS.LIGHT_GREEN,
   X: 0,
@@ -63,9 +67,12 @@ const CAMERA = {
   NEAR: 1,
   FAR: 1000,
   X: 0,
-  Y: 2,
-  Z: 5,
-  FIELD_OF_VIEW: 100,
+  Y: -2,
+  Z: 8,
+  ROTATION_X: 0,
+  ROTATION_Y: 0,
+  ROTATION_Z: 0,
+  FIELD_OF_VIEW: 60,
 };
 
 const RENDERER = {
@@ -74,31 +81,51 @@ const RENDERER = {
   SHADOW_MAP: true,
 };
 
+const CONTROLLER = {
+  JUMP: false,
+  SHOOT: false,
+  GO_DOWN: false,
+  COULD_JUMP: true,
+  LANE: LANES.CENTER,
+};
+
 const FOG = {
-  DENSITY: 0.03,
+  DENSITY: 0.06,
   COLOR: COLORS.GRAY,
 };
 
 const LIGHT = {
   FAR: CAMERA.FAR / 10,
   NEAR: CAMERA.NEAR,
-  INTENSITY: 0.7,
+  INTENSITY: 0.5,
   SKY_COLOR: COLORS.LIGHT_BLUE,
   GROUND_COLOR: COLORS.BLACK,
   SUN_LIGHT_COLOR: COLORS.LIGHT_YELLOW,
-  SUN_DIRECTION_X: 0,
-  SUN_DIRECTION_Y: 4,
-  SUN_DIRECTION_Z: 1,
+  SUN_DIRECTION_X: 30,
+  SUN_DIRECTION_Y: 50,
+  SUN_DIRECTION_Z: 30,
   SHADOW_RESOLUTION: 1024,
 };
 
 const ANIMATION = {
-  GLOBE_SPEED: 0.005,
-  HERO_SPEED: 0.005 * GLOBE.RADIUS / HERO.RADIUS / 5,
+  GRAVITY: 0.008,
+  GLOBE_SPEED: 0.008,
+  TREE_CREATE_INTERVAL: 0.8,
+  JUMP_VALUE: 0.2,
+  BOUNCE_VALUE: 0.06,
+  HERO_SPEED: (0.008 * GLOBE.RADIUS) / HERO.RADIUS / 5,
+};
+
+const SCORE = {
+  LIFES: 3,
+  VALUE: 10,
+  INCREASE_VALUE: 1,
+  DECREASE_VALUE: 2,
 };
 
 module.exports = {
   // values
+  LANES,
   COLORS,
   EVENTS,
   KEYS_CODES,
@@ -109,8 +136,10 @@ module.exports = {
 
   // config
   FOG,
+  SCORE,
   LIGHT,
   CAMERA,
   RENDERER,
   ANIMATION,
+  CONTROLLER,
 };

@@ -1,35 +1,45 @@
+const { createController } = require('./controller');
+const { attachResizeListener } = require('./resize');
+const { runAnimationLoop } = require('./animation');
 const { createRenderer } = require('./renderer');
 const { createCamera } = require('./camera');
 const { createScene } = require('./scene');
+const { createClock } = require('./clock');
+const { createScore } = require('./score');
 const { addLights } = require('./lights');
-const { addFog } = require('./fog');
-const { attachListeners } = require('./listeners');
-const { runAnimationLoop } = require('./animation');
-const { addHero } = require('./hero');
 const { addGlobe } = require('./globe');
+const { addHero } = require('./hero');
+const { addFog } = require('./fog');
 
 const init = (root) => {
   const scene = createScene();
+  const clock = createClock();
+  const hero = addHero(scene);
+  const globe = addGlobe(scene);
+  const score = createScore(root);
   const camera = createCamera(root);
   const renderer = createRenderer(root);
+  const controller = createController(root, camera, renderer);
 
+  // addFog(scene);
   addLights(scene);
-  addFog(scene);
-
-  const globe = addGlobe(scene);
-  const hero = addHero(scene);
+  attachResizeListener(root, renderer, camera);
 
   return {
-    renderer, camera, scene, globe, hero,
+    controller,
+    renderer,
+    camera,
+    clock,
+    scene,
+    globe,
+    score,
+    hero,
   };
 };
 
 const runGame = (root) => {
   const game = init(root);
 
-  game.camera.position.set(0, -30, 18);
-
-  attachListeners(root, game);
   runAnimationLoop(game);
 };
 
