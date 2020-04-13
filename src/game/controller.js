@@ -1,16 +1,11 @@
-const { OrbitControls } = require('three/examples/jsm/controls/OrbitControls');
-const {
-  DeviceOrientationControls,
-} = require('three/examples/jsm/controls/DeviceOrientationControls');
-const {
-  CONTROLLER,
-  LANES,
-  KEYS_CODES,
-  EVENTS: { KEY_DOWN },
-} = require('./constants');
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { DeviceOrientationControls } from 'three/examples/jsm/controls/DeviceOrientationControls';
+import {
+  CONTROLLER, LANES, KEYS_CODES, EVENTS,
+} from './constants';
 
-const handleKeyDown = (root, controller) => {
-  root.addEventListener(KEY_DOWN, (e) => {
+export const handleKeyDown = (root, controller) => {
+  root.addEventListener(EVENTS.KEY_DOWN, (e) => {
     e.preventDefault();
     switch (e.code) {
       case KEYS_CODES.ARROW_UP:
@@ -48,7 +43,7 @@ const handleKeyDown = (root, controller) => {
 };
 
 
-const createController = (root, camera, renderer) => {
+export const createController = (root, camera, renderer) => {
   // eslint-disable-next-line no-new
   new OrbitControls(camera, renderer.domElement);
   // eslint-disable-next-line no-new
@@ -91,5 +86,3 @@ const createController = (root, camera, renderer) => {
 
   return controller;
 };
-
-module.exports = { createController };

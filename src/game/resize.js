@@ -1,7 +1,7 @@
-const { EVENTS: { RESIZE } } = require('./constants');
+import { EVENTS } from './constants';
 
-const attachResizeListener = (root, renderer, camera) => {
-  window.addEventListener(RESIZE, () => {
+export const attachResizeListener = (root, renderer, camera) => {
+  window.addEventListener(EVENTS.RESIZE, () => {
     const height = root.offsetHeight;
     const width = root.offsetWidth;
 
@@ -10,5 +10,3 @@ const attachResizeListener = (root, renderer, camera) => {
     camera.updateProjectionMatrix();
   });
 };
-
-module.exports = { attachResizeListener };

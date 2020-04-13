@@ -1,8 +1,6 @@
-const { Scene } = require('three');
+import { Scene } from 'three';
 
-const createScene = () => {
+export const createScene = () => {
   const scene = new Scene();
   return scene;
 };
-
-module.exports = { createScene };

@@ -1,9 +1,7 @@
-const { Clock } = require('three');
+import { Clock } from 'three';
 
-const createClock = () => {
+export const createClock = () => {
   const clock = new Clock();
   clock.start();
   return clock;
 };
-
-module.exports = { createClock };

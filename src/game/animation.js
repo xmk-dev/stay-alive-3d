@@ -1,75 +1,94 @@
-const {
-  Math: { lerp },
-} = require('three');
-const {
-  ANIMATION: {
-    GLOBE_SPEED,
-    HERO_SPEED,
-    GRAVITY,
-    TREE_CREATE_INTERVAL,
-    JUMP_VALUE,
-    BOUNCE_VALUE,
-  },
-  HERO: { Y: HERO_Y },
-} = require('./constants');
-const { addPathTree } = require('./tree');
+import { Math as ThreeMath } from 'three';
+import { ANIMATION, HERO } from './constants';
+import { updateObstacles, addObstacle, hasCollided } from './obstacles';
 
-const animation = {
+const animationState = {
+  id: -1,
   jumpValue: 0,
+  rollingSpeed: 0,
+  obstaclesAddSpeed: 0,
 };
 
-const heroAnimation = (controller, hero, clock) => {
+export const heroAnimation = (controller, hero, clock) => {
   const shiftSpeed = 3;
-  if (animation.jumpValue >= JUMP_VALUE) {
+
+  if (animationState.jumpValue >= ANIMATION.JUMP_VALUE) {
     controller.endJump();
   }
+
   if (controller.jump) {
-    animation.jumpValue += BOUNCE_VALUE;
+    animationState.jumpValue += ANIMATION.BOUNCE_VALUE;
   }
+
   if (controller.goDown) {
-    if (hero.position.y > HERO_Y) {
-      animation.jumpValue -= GRAVITY;
+    if (hero.position.y > HERO.Y) {
+      animationState.jumpValue -= ANIMATION.GRAVITY;
     } else {
       controller.endGoDown();
     }
   }
-  if (hero.position.y <= HERO_Y) {
+
+  if (hero.position.y <= HERO.Y) {
     controller.enableJump();
-    animation.jumpValue = Math.random() * BOUNCE_VALUE + GRAVITY;
+    animationState.jumpValue = Math.random() * ANIMATION.BOUNCE_VALUE + ANIMATION.GRAVITY;
   }
-  hero.position.y += animation.jumpValue;
-  animation.jumpValue -= GRAVITY;
-  hero.position.x = lerp(
+
+  hero.position.y += animationState.jumpValue;
+  animationState.jumpValue -= ANIMATION.GRAVITY;
+  hero.rotation.x -= ANIMATION.HERO_SPEED;
+  hero.position.x = ThreeMath.lerp(
     hero.position.x,
     controller.lane,
     shiftSpeed * clock.getDelta(),
   );
-  hero.rotation.x -= HERO_SPEED;
 };
 
-const globeAnimation = (globe) => {
-  globe.rotation.x += GLOBE_SPEED;
+export const globeAnimation = (globe) => {
+  globe.rotation.x += ANIMATION.GLOBE_SPEED;
 };
 
-const runAnimationLoop = (props) => {
+const obstaclesAnimation = (clock, rocks, globe, hero) => {
+  if (clock.getElapsedTime() > ANIMATION.OBSTACLES_UPDATE_INTERVAL) {
+    clock.start();
+
+    // TODO: split adding from removing in different intervals
+    addObstacle(rocks, globe);
+    if (Math.random() > 0.4) {
+      addObstacle(rocks, globe);
+    }
+
+    updateObstacles(rocks, globe, hero);
+  }
+};
+
+const handleCollisions = (rocks, hero, score) => {
+  const collisions = [hasCollided(rocks, hero)];
+  collisions.forEach((collision) => {
+    if (!collision) { return; }
+    score.decrementScore();
+  });
+};
+
+const handleGameOver = (score, endGameCallback) => {
+  if (score.lifes === 0) {
+    cancelAnimationFrame(animationState.id);
+    endGameCallback();
+  }
+};
+
+export const runAnimationLoop = (props, endGameCallback) => {
   const {
-    renderer, scene, camera, globe, hero, clock, controller,
+    renderer, scene, camera, globe, hero, clock, controller, rocks, score,
   } = props;
 
-  heroAnimation(controller, hero, clock);
+  handleGameOver(score, endGameCallback);
   globeAnimation(globe);
+  heroAnimation(controller, hero, clock);
+  obstaclesAnimation(clock, rocks, globe, hero);
+  handleCollisions(rocks, hero, score);
 
+  score.incrementScore();
 
-  if (clock.getElapsedTime() > TREE_CREATE_INTERVAL) {
-    clock.start();
-    addPathTree(globe, hero);
-  }
-
-  // doTreeLogic();
-  // doExplosionLogic();
-
-  requestAnimationFrame(() => runAnimationLoop(props));
+  animationState.id = requestAnimationFrame(() => runAnimationLoop(props));
   renderer.render(scene, camera);
 };
-
-module.exports = { runAnimationLoop };

@@ -19,5 +19,6 @@ module.exports = {
   plugins: ['jest'],
   rules: {
     'no-param-reassign': 'off',
+    'import/prefer-default-export': 'off',
   },
 };

@@ -1,17 +1,19 @@
-const { createController } = require('./controller');
-const { attachResizeListener } = require('./resize');
-const { runAnimationLoop } = require('./animation');
-const { createRenderer } = require('./renderer');
-const { createCamera } = require('./camera');
-const { createScene } = require('./scene');
-const { createClock } = require('./clock');
-const { createScore } = require('./score');
-const { addLights } = require('./lights');
-const { addGlobe } = require('./globe');
-const { addHero } = require('./hero');
-const { addFog } = require('./fog');
+import { createController } from './controller';
+import { attachResizeListener } from './resize';
+import { runAnimationLoop } from './animation';
+import { createObstacles } from './obstacles';
+import { createRenderer } from './renderer';
+import { createCamera } from './camera';
+import { createScene } from './scene';
+import { createClock } from './clock';
+import { createScore } from './score';
+import { addLights } from './lights';
+import { createRock } from './rock';
+import { addGlobe } from './globe';
+import { addHero } from './hero';
+import { addFog } from './fog';
 
-const init = (root) => {
+export const init = (root) => {
   const scene = createScene();
   const clock = createClock();
   const hero = addHero(scene);
@@ -19,6 +21,7 @@ const init = (root) => {
   const score = createScore(root);
   const camera = createCamera(root);
   const renderer = createRenderer(root);
+  const rocks = createObstacles(createRock);
   const controller = createController(root, camera, renderer);
 
   // addFog(scene);
@@ -33,16 +36,13 @@ const init = (root) => {
     scene,
     globe,
     score,
+    rocks,
     hero,
   };
 };
 
-const runGame = (root) => {
+export const runGame = (root) => {
   const game = init(root);
 
   runAnimationLoop(game);
-};
-
-module.exports = {
-  runGame,
 };

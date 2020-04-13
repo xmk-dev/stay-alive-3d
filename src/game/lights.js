@@ -1,32 +1,17 @@
-const { HemisphereLight, DirectionalLight } = require('three');
-const {
-  LIGHT: {
-    INTENSITY,
-    SKY_COLOR,
-    GROUND_COLOR,
-    SUN_LIGHT_COLOR,
-    SUN_DIRECTION_X,
-    SUN_DIRECTION_Y,
-    SUN_DIRECTION_Z,
-    SHADOW_RESOLUTION,
-    NEAR,
-    FAR,
-  },
-} = require('./constants');
+import { HemisphereLight, DirectionalLight } from 'three';
+import { LIGHT } from './constants';
 
-const addLights = (scene) => {
-  const sceneLight = new HemisphereLight(SKY_COLOR, GROUND_COLOR, INTENSITY);
+export const addLights = (scene) => {
+  const sceneLight = new HemisphereLight(LIGHT.SKY_COLOR, LIGHT.GROUND_COLOR, LIGHT.INTENSITY);
 
-  const sunLight = new DirectionalLight(SUN_LIGHT_COLOR, INTENSITY);
-  sunLight.position.set(SUN_DIRECTION_X, SUN_DIRECTION_Y, SUN_DIRECTION_Z);
-  sunLight.shadow.mapSize.height = SHADOW_RESOLUTION;
-  sunLight.shadow.mapSize.width = SHADOW_RESOLUTION;
-  sunLight.shadow.camera.near = NEAR;
-  sunLight.shadow.camera.far = FAR;
+  const sunLight = new DirectionalLight(LIGHT.SUN_LIGHT_COLOR, LIGHT.INTENSITY);
+  sunLight.position.set(LIGHT.SUN_DIRECTION_X, LIGHT.SUN_DIRECTION_Y, LIGHT.SUN_DIRECTION_Z);
+  sunLight.shadow.mapSize.height = LIGHT.SHADOW_RESOLUTION;
+  sunLight.shadow.mapSize.width = LIGHT.SHADOW_RESOLUTION;
+  sunLight.shadow.camera.near = LIGHT.NEAR;
+  sunLight.shadow.camera.far = LIGHT.FAR;
   sunLight.castShadow = true;
 
   scene.add(sceneLight);
   scene.add(sunLight);
 };
-
-module.exports = { addLights };

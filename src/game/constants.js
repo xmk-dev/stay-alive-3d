@@ -1,4 +1,4 @@
-const COLORS = {
+export const COLORS = {
   RED: 0xf25346,
   BROWN: 0x59332e,
   PINK: 0xF5986E,
@@ -14,13 +14,13 @@ const COLORS = {
   BLACK: 0x000100,
 };
 
-const EVENTS = {
+export const EVENTS = {
   KEY_UP: 'keyup',
   KEY_DOWN: 'keydown',
   RESIZE: 'resize',
 };
 
-const KEYS_CODES = {
+export const KEYS_CODES = {
   ARROW_UP: 'ArrowUp',
   ARROW_LEFT: 'ArrowLeft',
   ARROW_DOWN: 'ArrowDown',
@@ -28,14 +28,14 @@ const KEYS_CODES = {
   SPACE: 'Space',
 };
 
-const LANES = {
+export const LANES = {
   LEFT: -4,
   CENTER: 0,
   RIGHT: 4,
 };
 
 // models
-const HERO = {
+export const HERO = {
   RADIUS: 0.8,
   SIDES: 8,
   TIERS: 8,
@@ -43,10 +43,10 @@ const HERO = {
   COLOR: COLORS.YELLOW,
   X: 0,
   Y: -3,
-  Z: 0,
+  Z: 1,
 };
 
-const GLOBE = {
+export const GLOBE = {
   RADIUS: 30,
   SIDES: 30,
   TIERS: 30,
@@ -63,7 +63,7 @@ const GLOBE = {
 
 
 // config
-const CAMERA = {
+export const CAMERA = {
   NEAR: 1,
   FAR: 1000,
   X: 0,
@@ -75,13 +75,13 @@ const CAMERA = {
   FIELD_OF_VIEW: 60,
 };
 
-const RENDERER = {
+export const RENDERER = {
   ALPHA: true,
   ANTIALIAS: true,
   SHADOW_MAP: true,
 };
 
-const CONTROLLER = {
+export const CONTROLLER = {
   JUMP: false,
   SHOOT: false,
   GO_DOWN: false,
@@ -89,12 +89,12 @@ const CONTROLLER = {
   LANE: LANES.CENTER,
 };
 
-const FOG = {
+export const FOG = {
   DENSITY: 0.06,
   COLOR: COLORS.GRAY,
 };
 
-const LIGHT = {
+export const LIGHT = {
   FAR: CAMERA.FAR / 10,
   NEAR: CAMERA.NEAR,
   INTENSITY: 0.5,
@@ -107,39 +107,22 @@ const LIGHT = {
   SHADOW_RESOLUTION: 1024,
 };
 
-const ANIMATION = {
+export const ANIMATION = {
   GRAVITY: 0.008,
   GLOBE_SPEED: 0.008,
-  TREE_CREATE_INTERVAL: 0.8,
+  OBSTACLES_UPDATE_INTERVAL: 0.6,
   JUMP_VALUE: 0.2,
   BOUNCE_VALUE: 0.06,
   HERO_SPEED: (0.008 * GLOBE.RADIUS) / HERO.RADIUS / 5,
 };
 
-const SCORE = {
+export const SCORE = {
   LIFES: 3,
-  VALUE: 10,
+  VALUE: 3 * 2,
   INCREASE_VALUE: 1,
   DECREASE_VALUE: 2,
 };
 
-module.exports = {
-  // values
-  LANES,
-  COLORS,
-  EVENTS,
-  KEYS_CODES,
-
-  // models
-  HERO,
-  GLOBE,
-
-  // config
-  FOG,
-  SCORE,
-  LIGHT,
-  CAMERA,
-  RENDERER,
-  ANIMATION,
-  CONTROLLER,
+export const OBSTACLES = {
+  COUNT: 30,
 };

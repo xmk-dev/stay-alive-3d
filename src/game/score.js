@@ -1,6 +1,6 @@
-const { SCORE } = require('./constants');
+import { SCORE } from './constants';
 
-const createScore = (root) => {
+export const createScore = (root) => {
   const scoreElementId = 'score';
   const valueElementId = 'score-value';
   const lifesElementId = 'score-lifes';
@@ -21,6 +21,7 @@ const createScore = (root) => {
     lifes: SCORE.LIFES,
     incrementScore: (value = 0) => {
       score.value += value + SCORE.INCREASE_VALUE;
+      score.updateScore();
     },
     decrementScore: () => {
       score.value -= SCORE.DECREASE_VALUE;
@@ -29,11 +30,9 @@ const createScore = (root) => {
     },
     updateScore: () => {
       document.getElementById(valueElementId).innerHTML = score.value;
-      document.getElementById(lifesElementId).innerHTML = Array(score.lifes).fill(0).map(() => '❤️').join('');
+      document.getElementById(lifesElementId).innerHTML = score.lifes ? Array(score.lifes).fill(0).map(() => '❤️').join('') : '';
     },
   };
 
   return score;
 };
-
-module.exports = { createScore };

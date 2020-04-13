@@ -1,30 +1,16 @@
-const { PerspectiveCamera } = require('three');
-const {
-  CAMERA: {
-    FIELD_OF_VIEW,
-    NEAR,
-    FAR,
-    X,
-    Y,
-    Z,
-    ROTATION_X,
-    ROTATION_Y,
-    ROTATION_Z,
-  },
-} = require('./constants');
+import { PerspectiveCamera } from 'three';
+import { CAMERA } from './constants';
 
-const createCamera = (root) => {
+export const createCamera = (root) => {
   const camera = new PerspectiveCamera(
-    FIELD_OF_VIEW,
+    CAMERA.FIELD_OF_VIEW,
     root.offsetWidth / root.offsetHeight,
-    NEAR,
-    FAR,
+    CAMERA.NEAR,
+    CAMERA.FAR,
   );
 
-  camera.position.set(X, Y, Z);
-  camera.rotation.set(ROTATION_X, ROTATION_Y, ROTATION_Z);
+  camera.position.set(CAMERA.X, CAMERA.Y, CAMERA.Z);
+  camera.rotation.set(CAMERA.ROTATION_X, CAMERA.ROTATION_Y, CAMERA.ROTATION_Z);
 
   return camera;
 };
-
-module.exports = { createCamera };

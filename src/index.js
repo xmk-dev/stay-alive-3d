@@ -1,4 +1,4 @@
-const { runGame } = require('./game/main');
-require('./styles/main.css');
+import './styles/main.css';
+import { runGame } from './game/main';
 
 runGame(document.body);

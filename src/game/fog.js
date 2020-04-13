@@ -1,9 +1,7 @@
-const { FogExp2 } = require('three');
-const { FOG: { COLOR, DENSITY } } = require('./constants');
+import { FogExp2 } from 'three';
+import { FOG } from './constants';
 
-const addFog = (scene) => {
-  const fog = new FogExp2(COLOR, DENSITY);
+export const addFog = (scene) => {
+  const fog = new FogExp2(FOG.COLOR, FOG.DENSITY);
   scene.fog = fog;
 };
-
-module.exports = { addFog };

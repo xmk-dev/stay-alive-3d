@@ -1,6 +1,7 @@
 html,
 body {
-    font-family: 'Courier New', Courier, monospace;
+    font-family: Helvetica, monospace;
+    font-weight: 100;
     width: 100vw;
     height: 100vh;
     margin: 0;
@@ -8,24 +9,23 @@ body {
 }
 
 #score {
+    top: 20px;
+    left: 20px;
+    height: 100px;
     z-index: 9999;
     position: fixed;
-    width: 200px;
-    height: 100px;
-    top: 40px;
-    left: 40px;
-    border-radius: 20px;
-    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
+    min-width: 100px;
     text-align: center;
-    padding: 20px 0;
+    letter-spacing: 10px;
 }
 
 #score-value {
     position: relative;
-    font-size: 60px;
+    font-size: 40px;
+
 }
 
 #score-lifes {
     position: relative;
-    font-size: 20px;
+    font-size: 15px;
 }
