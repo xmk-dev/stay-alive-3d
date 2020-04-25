@@ -1,8 +1,7 @@
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { DeviceOrientationControls } from 'three/examples/jsm/controls/DeviceOrientationControls';
 import {
   CONTROLLER, LANES, KEYS_CODES, EVENTS,
-} from './constants';
+} from '../config';
 
 export const handleKeyDown = (root, controller) => {
   root.addEventListener(EVENTS.KEY_DOWN, (e) => {
@@ -20,7 +19,7 @@ export const handleKeyDown = (root, controller) => {
         if (controller.lane === LANES.RIGHT) {
           controller.lane = LANES.CENTER;
         }
-        return controller.startJump();
+        return null;
       case KEYS_CODES.ARROW_DOWN:
         return controller.startGoDown();
       case KEYS_CODES.ARROW_RIGHT:
@@ -33,7 +32,7 @@ export const handleKeyDown = (root, controller) => {
         if (controller.lane === LANES.LEFT) {
           controller.lane = LANES.CENTER;
         }
-        return controller.startJump();
+        return null;
       case KEYS_CODES.SPACE:
         return controller.startShooting();
       default:
@@ -43,30 +42,28 @@ export const handleKeyDown = (root, controller) => {
 };
 
 
-export const createController = (root, camera, renderer) => {
+export default (root, camera, renderer) => {
   // eslint-disable-next-line no-new
-  new OrbitControls(camera, renderer.domElement);
-  // eslint-disable-next-line no-new
-  new DeviceOrientationControls(camera, renderer.domElement);
+  // new OrbitControls(camera, renderer.domElement);
 
   const controller = {
     jump: CONTROLLER.JUMP,
     lane: CONTROLLER.LANE,
     shoot: CONTROLLER.SHOOT,
     goDown: CONTROLLER.GO_DOWN,
-    couldJump: CONTROLLER.COULD_JUMP,
+    canJump: CONTROLLER.COULD_JUMP,
     startJump: () => {
-      if (!controller.couldJump) {
+      if (!controller.canJump) {
         return;
       }
       controller.jump = true;
-      controller.couldJump = false;
+      controller.canJump = false;
     },
     endJump: () => {
       controller.jump = false;
     },
     enableJump: () => {
-      controller.couldJump = true;
+      controller.canJump = true;
     },
     startGoDown: () => {
       controller.goDown = true;

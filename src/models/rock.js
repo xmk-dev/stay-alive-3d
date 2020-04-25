@@ -1,13 +1,13 @@
 import { MeshStandardMaterial, SphereGeometry, Mesh } from 'three';
-import { distortVertex } from './utils';
+import { distortGeometry } from '../utils/geometry';
 
-export const createRock = () => {
+export default () => {
   // TODO: move to constants
-  const maxVertexHeight = 0.5;
+  const maxVertexHeight = 0.03;
   const color = 0xf0f0f0;
-  const bigRadius = 1.7;
-  const widthSegments = 5;
-  const heightSegments = 7;
+  const bigRadius = 0.4;
+  const widthSegments = 9;
+  const heightSegments = 6;
 
   const material = new MeshStandardMaterial({
     color,
@@ -20,7 +20,7 @@ export const createRock = () => {
     heightSegments,
   );
 
-  rockGeometry.vertices.forEach((v) => distortVertex(v, maxVertexHeight));
+  distortGeometry(rockGeometry, maxVertexHeight);
 
   const rock = new Mesh(rockGeometry, material);
   rock.castShadow = true;

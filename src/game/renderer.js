@@ -1,15 +1,14 @@
-import { WebGLRenderer } from 'three';
-import { RENDERER } from './constants';
+import { WebGLRenderer, BasicShadowMap } from 'three';
+import { RENDERER } from '../config';
 
-export const createRenderer = (root) => {
-  const renderer = new WebGLRenderer({
-    alpha: RENDERER.ALPHA,
-    antialias: RENDERER.ANTIALIAS,
-  });
+export default (root) => {
+  const renderer = new WebGLRenderer({ antialias: RENDERER.ANTIALIAS });
 
+  // TODO: move that to constants
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(root.offsetWidth, root.offsetHeight);
-  renderer.shadowMap.enabled = RENDERER.SHADOW_MAP;
+  renderer.shadowMap.type = BasicShadowMap;
+  renderer.shadowMap.enabled = true;
 
   root.appendChild(renderer.domElement);
 

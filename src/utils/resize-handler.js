@@ -1,6 +1,6 @@
-import { EVENTS } from './constants';
+import { EVENTS } from '../config';
 
-export const attachResizeListener = (root, renderer, camera) => {
+export default (root, renderer, camera) => {
   window.addEventListener(EVENTS.RESIZE, () => {
     const height = root.offsetHeight;
     const width = root.offsetWidth;

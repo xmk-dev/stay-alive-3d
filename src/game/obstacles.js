@@ -1,108 +1,110 @@
 import { Spherical, Vector3, Box3 } from 'three';
-import { round } from 'lodash';
-import { OBSTACLES } from './constants';
+import {
+  round, shuffle,
+} from 'lodash';
+import { OBSTACLES, LANES } from '../config';
+
+// TODO: move to constants
+const ROW_DISTANCE = 2;
+const MIN_INVISIBLE_ROWS = 5;
+const OBSTACLE_Y = -0.75;
 
 export const obstaclesState = {
+  currentPositionZ: -20,
+  collisions: {},
   positions: {},
-  collided: {},
 };
 
-export const createObstaclePositionKey = (phi, theta) => (
-  `${round(phi, 1)}-${round(theta, 1)}`
-);
+export const shouldAddObstacle = (hero) => hero.position.z < obstaclesState.currentPositionZ + ROW_DISTANCE * MIN_INVISIBLE_ROWS;
 
-export const getObstacleSphericalAngles = (globe) => {
-  // TODO: Move to config
-  const obstaclesPositions = {
-    LEFT: 4.84,
-    CENTER: 4.7,
-    RIGHT: 4.57,
-  };
+export const getPositionKey = (x, z) => `${x}-${z}`;
 
-  const obstaclePhiIndex = Math.floor(Math.random() * Object.keys(obstaclesPositions).length);
-  const phi = Object.values(obstaclesPositions)[obstaclePhiIndex];
-  const theta = globe.rotation.x;
-  return { phi, theta };
-};
-
-export const createObstacles = (obstacleCreator) => {
-  const base = obstacleCreator();
+export const createObstacles = (creators, countForType) => {
+  const bases = creators.map((creator) => creator());
 
   return {
-    base,
     used: [],
-    available: Array(OBSTACLES.COUNT)
+    available: bases.map((base) => Array(countForType)
       .fill(0)
-      .map(() => base.clone())
-      .map((o) => Object.assign(o, { visible: false })),
+      .map(() => Object.assign(base.clone(), { visible: false }))).flat(),
   };
 };
 
-export const addObstacle = (obstacles, globe) => {
-  // TODO: move to config
-  const worldRadius = 30;
+export const addObstacle = (obstacle, obstacles, scene) => {
+  const availableLane = shuffle(LANES).find(
+    (x) => !Object
+      .values(obstaclesState.positions)
+      .includes(getPositionKey(x, obstaclesState.currentPositionZ)),
+  );
 
-  const newObstacle = obstacles.available.pop();
+  if (Number.isNaN(availableLane)) { return false; }
 
-  if (!newObstacle) { return; }
+  obstaclesState.positions[obstacle.uuid] = getPositionKey(availableLane, obstaclesState.currentPositionZ);
+  obstacle.position.set(availableLane, OBSTACLE_Y, obstaclesState.currentPositionZ);
+  obstaclesState.collisions[obstacle.uuid] = false;
+  obstacle.visible = true;
+  scene.add(obstacle);
+  obstacles.used.push(obstacle);
 
-  let angles;
-  let posKey;
-  // TODO: move to config
-  let retries = 3;
-  let isObstaclePositionValid = false;
-  while (!isObstaclePositionValid && retries) {
-    angles = getObstacleSphericalAngles(globe);
-    posKey = createObstaclePositionKey(angles.phi, angles.theta);
-    isObstaclePositionValid = posKey && !Object.values(obstaclesState.positions).includes(posKey);
-    retries -= 1;
-  }
-
-  if (!isObstaclePositionValid || !angles.phi || !angles.theta) { return; }
-
-  obstaclesState.positions[newObstacle.uuid] = posKey;
-
-  const spherical = new Spherical(worldRadius, angles.phi, angles.theta);
-
-  newObstacle.position.setFromSpherical(spherical);
-  obstacles.used.push(newObstacle);
-  newObstacle.visible = true;
-
-  globe.add(newObstacle);
+  return true;
 };
 
-export const updateObstacles = (obstacles, globe, hero) => {
-  const usedObstaclesIndexesToRemove = obstacles.used.map((obstacle, index) => {
-    const obstaclePosition = new Vector3();
-    obstaclePosition.setFromMatrixPosition(obstacle.matrixWorld);
-    return obstaclePosition.z > hero.position.z && obstacle.visible ? index : null;
-  });
+export const addObstacles = (obstacles, hero, scene) => shuffle(obstacles.available).filter((obstacle, i) => {
+  if (!shouldAddObstacle(hero)) { return true; }
 
-  let removedCount = 0;
-  usedObstaclesIndexesToRemove.forEach((indexToRemove) => {
-    if (indexToRemove === null) { return; }
+  let isAdded = false;
 
-    const index = indexToRemove - removedCount;
-    const obstacleUuid = obstacles.used[index].uuid;
-    obstacles.used[index].visible = false;
-    delete obstaclesState.positions[obstacleUuid];
-    delete obstaclesState.collided[obstacleUuid];
-    obstacles.available.push(obstacles.used[index]);
-    obstacles.used.splice(indexToRemove - removedCount, 1);
-    removedCount += 1;
-  });
-};
-
-export const hasCollided = (obstacles, hero) => !!obstacles.used.find((obstacle) => {
-  if (obstaclesState.collided[obstacle.uuid] || !obstacle.visible) { return false; }
-
-  const obstaclePosition = new Vector3();
-  obstaclePosition.setFromMatrixPosition(obstacle.matrixWorld);
-  const collided = obstaclePosition.distanceTo(hero.position) < hero.geometry.parameters.radius;
-
-  if (collided) {
-    obstaclesState.collided[obstacle.uuid] = collided;
+  if (Math.random() > 0.5) {
+    isAdded = addObstacle(obstacle, obstacles, scene);
   }
 
-  return collided;
+  if (Math.random() > 0.3) {
+    obstaclesState.currentPositionZ -= ROW_DISTANCE;
+  }
+
+  return !isAdded;
 });
+
+export const removeObstacle = (obstacle, obstacles, scene) => {
+  delete obstaclesState.collisions[obstacle.uuid];
+  delete obstaclesState.positions[obstacle.uuid];
+  obstacle.visible = false;
+  scene.remove(obstacle);
+  obstacles.available.push(obstacle);
+};
+
+export const removeInvisibleObstacles = (obstacles, hero, scene) => obstacles.used.filter((obstacle) => {
+  const isBehindHero = hero.position.z < obstacle.position.z - ROW_DISTANCE;
+
+  if (isBehindHero) {
+    removeObstacle(obstacle, obstacles, scene);
+  }
+
+  return !isBehindHero;
+});
+
+export const updateObstacles = (obstacles, hero, scene) => {
+  obstacles.used = removeInvisibleObstacles(obstacles, hero, scene);
+
+  if (!shouldAddObstacle(hero)) { return; }
+
+  obstacles.available = addObstacles(obstacles, hero, scene);
+};
+
+export const hasCollided = (obstacles, hero) => {
+  const heroBox = new Box3().setFromObject(hero);
+
+  return !!obstacles.used.find((obstacle) => {
+    if (obstaclesState.collisions[obstacle.uuid]) { return false; }
+
+    const obstacleBox = new Box3().setFromObject(obstacle);
+
+    const collided = obstacleBox.intersectsBox(heroBox);
+
+    if (collided) {
+      obstaclesState.collisions[obstacle.uuid] = true;
+    }
+
+    return collided;
+  });
+};

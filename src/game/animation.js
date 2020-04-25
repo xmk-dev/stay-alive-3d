@@ -1,93 +1,95 @@
 import { Math as ThreeMath } from 'three';
-import { ANIMATION, HERO } from './constants';
-import { updateObstacles, addObstacle, hasCollided } from './obstacles';
+import { round } from 'lodash';
+import { ANIMATION, HERO, GROUND } from '../config';
+import { updateObstacles, hasCollided } from './obstacles';
 
+const SPEED = 0.08;
+const ADD_GROUND_OFFSET = 300;
 const animationState = {
   id: -1,
-  jumpValue: 0,
-  rollingSpeed: 0,
-  obstaclesAddSpeed: 0,
+  timeSinceObstaclesUpdate: 0,
+  lastGroundZ: GROUND.Z - GROUND.DEPTH / 2,
 };
 
-export const heroAnimation = (controller, hero, clock) => {
-  const shiftSpeed = 3;
+export const heroAnimation = async (controller, hero, timeDelta) => {
+  // TODO: Move to constants
+  const shiftSpeed = 0.04;
+  const heroScene = hero.gltf.scene;
 
-  if (animationState.jumpValue >= ANIMATION.JUMP_VALUE) {
+  hero.mixer.update(timeDelta);
+
+  if (heroScene.position.y >= 0.1) {
     controller.endJump();
   }
 
   if (controller.jump) {
-    animationState.jumpValue += ANIMATION.BOUNCE_VALUE;
+    heroScene.position.y += shiftSpeed;
   }
 
-  if (controller.goDown) {
-    if (hero.position.y > HERO.Y) {
-      animationState.jumpValue -= ANIMATION.GRAVITY;
-    } else {
-      controller.endGoDown();
-    }
-  }
-
-  if (hero.position.y <= HERO.Y) {
+  if (heroScene.position.y > HERO.Y) {
+    const jumpMultiplier = controller.jump ? 0.2 : 1;
+    const goDownMultipier = controller.goDown && !controller.jump ? 2 : 1;
+    heroScene.position.y -= shiftSpeed * jumpMultiplier * goDownMultipier;
+  } else {
+    controller.endGoDown();
     controller.enableJump();
-    animationState.jumpValue = Math.random() * ANIMATION.BOUNCE_VALUE + ANIMATION.GRAVITY;
   }
 
-  hero.position.y += animationState.jumpValue;
-  animationState.jumpValue -= ANIMATION.GRAVITY;
-  hero.rotation.x -= ANIMATION.HERO_SPEED;
-  hero.position.x = ThreeMath.lerp(
-    hero.position.x,
-    controller.lane,
-    shiftSpeed * clock.getDelta(),
-  );
-};
-
-export const globeAnimation = (globe) => {
-  globe.rotation.x += ANIMATION.GLOBE_SPEED;
-};
-
-const obstaclesAnimation = (clock, rocks, globe, hero) => {
-  if (clock.getElapsedTime() > ANIMATION.OBSTACLES_UPDATE_INTERVAL) {
-    clock.start();
-
-    // TODO: split adding from removing in different intervals
-    addObstacle(rocks, globe);
-    if (Math.random() > 0.4) {
-      addObstacle(rocks, globe);
-    }
-
-    updateObstacles(rocks, globe, hero);
+  if (round(heroScene.position.x, 1) !== controller.lane) {
+    const sideSign = controller.lane > heroScene.position.x ? 1 : -1;
+    heroScene.position.x += sideSign * shiftSpeed;
   }
+
+  heroScene.position.z -= SPEED;
 };
 
-const handleCollisions = (rocks, hero, score) => {
-  const collisions = [hasCollided(rocks, hero)];
-  collisions.forEach((collision) => {
-    if (!collision) { return; }
+export const obstaclesAnimation = (obstacles, hero, scene, score, timeDelta) => {
+  animationState.timeSinceObstaclesUpdate += timeDelta;
+
+  const heroScene = hero.gltf.scene;
+
+  if (animationState.timeSinceObstaclesUpdate > ANIMATION.OBSTACLES_UPDATE_INTERVAL) {
+    updateObstacles(obstacles, heroScene, scene);
+    animationState.timeSinceObstaclesUpdate = 0;
+  }
+
+  const collided = hasCollided(obstacles, heroScene);
+
+  if (collided) {
     score.decrementScore();
-  });
-};
-
-const handleGameOver = (score, endGameCallback) => {
-  if (score.lifes === 0) {
-    cancelAnimationFrame(animationState.id);
-    endGameCallback();
   }
 };
 
-export const runAnimationLoop = (props, endGameCallback) => {
-  const {
-    renderer, scene, camera, globe, hero, clock, controller, rocks, score,
-  } = props;
+export const groundAnimation = (ground, hero) => {
+  const heroScene = hero.gltf.scene;
 
-  handleGameOver(score, endGameCallback);
-  globeAnimation(globe);
-  heroAnimation(controller, hero, clock);
-  obstaclesAnimation(clock, rocks, globe, hero);
-  handleCollisions(rocks, hero, score);
+  if (round(heroScene.position.z) > animationState.lastGroundZ + ADD_GROUND_OFFSET) { return; }
+
+  ground.children = ground.children.filter((groundPiece) => groundPiece.position.z - GROUND.DEPTH < heroScene.position.z);
+
+  const lastGroundPiece = ground.children[0];
+  const newGroundPiece = lastGroundPiece.clone();
+  lastGroundPiece.position.set(0, 0, lastGroundPiece.position.z - GROUND.DEPTH);
+  animationState.lastGroundZ -= GROUND.DEPTH;
+  ground.add(newGroundPiece);
+};
+
+export const cameraAnimation = (camera) => {
+  camera.position.z -= SPEED;
+};
+
+export const runAnimationLoop = (props) => {
+  const {
+    renderer, scene, camera, ground, score, hero, clock, controller, obstacles,
+  } = props;
+  const timeDelta = clock.getDelta();
 
   score.incrementScore();
+
+  cameraAnimation(camera);
+  groundAnimation(ground, hero);
+  heroAnimation(controller, hero, timeDelta);
+  obstaclesAnimation(obstacles, hero, scene, score, timeDelta);
 
   animationState.id = requestAnimationFrame(() => runAnimationLoop(props));
   renderer.render(scene, camera);

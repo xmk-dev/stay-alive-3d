@@ -1,17 +1,17 @@
 import { HemisphereLight, DirectionalLight } from 'three';
-import { LIGHT } from './constants';
+import { LIGHT } from '../config';
 
-export const addLights = (scene) => {
-  const sceneLight = new HemisphereLight(LIGHT.SKY_COLOR, LIGHT.GROUND_COLOR, LIGHT.INTENSITY);
+export default () => {
+  const sceneLight = new HemisphereLight(LIGHT.SKY_COLOR, LIGHT.GROUND_COLOR, LIGHT.SCENE_INTENSITY);
 
-  const sunLight = new DirectionalLight(LIGHT.SUN_LIGHT_COLOR, LIGHT.INTENSITY);
-  sunLight.position.set(LIGHT.SUN_DIRECTION_X, LIGHT.SUN_DIRECTION_Y, LIGHT.SUN_DIRECTION_Z);
+  const sunLight = new DirectionalLight(LIGHT.SUN_LIGHT_COLOR, LIGHT.SUN_INTENSITY);
+  sunLight.position.set(LIGHT.SUN_X, LIGHT.SUN_Y, LIGHT.SUN_Z);
   sunLight.shadow.mapSize.height = LIGHT.SHADOW_RESOLUTION;
   sunLight.shadow.mapSize.width = LIGHT.SHADOW_RESOLUTION;
-  sunLight.shadow.camera.near = LIGHT.NEAR;
-  sunLight.shadow.camera.far = LIGHT.FAR;
   sunLight.castShadow = true;
 
-  scene.add(sceneLight);
-  scene.add(sunLight);
+  return {
+    sceneLight,
+    sunLight,
+  };
 };

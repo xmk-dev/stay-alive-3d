@@ -1,6 +1,6 @@
 import { Clock } from 'three';
 
-export const createClock = () => {
+export default () => {
   const clock = new Clock();
   clock.start();
   return clock;

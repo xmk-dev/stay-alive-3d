@@ -15,7 +15,6 @@ export const COLORS = {
 };
 
 export const EVENTS = {
-  KEY_UP: 'keyup',
   KEY_DOWN: 'keydown',
   RESIZE: 'resize',
 };
@@ -29,54 +28,53 @@ export const KEYS_CODES = {
 };
 
 export const LANES = {
-  LEFT: -4,
   CENTER: 0,
-  RIGHT: 4,
+  LEFT: -0.7,
+  RIGHT: 0.7,
 };
 
 // models
-export const HERO = {
-  RADIUS: 0.8,
-  SIDES: 8,
-  TIERS: 8,
-  FLAT_SHADING: true,
-  COLOR: COLORS.YELLOW,
+export const GROUND = {
   X: 0,
-  Y: -3,
-  Z: 1,
+  Y: -1.1,
+  Z: 0,
+  WIDTH: 100,
+  HEIGHT: 1,
+  DEPTH: 150,
+  WIDTH_SEGMENTS: 50,
+  HEIGHT_SEGMENTS: 1,
+  DEPTH_SEGMENTS: 50,
+  FLAT_SHADING: true,
+  DISTORTION_VALUE: 0.13,
+  COLOR: COLORS.LIGHT_GREEN,
+  CAST_SHADOW: false,
+  RECEIVE_SHADOW: true,
 };
 
-export const GLOBE = {
-  RADIUS: 30,
-  SIDES: 30,
-  TIERS: 30,
-  ROTATION_X: (0 * Math.PI) / 180,
-  ROTATION_Y: (0 * Math.PI) / 180,
-  ROTATION_Z: (90 * Math.PI) / 180,
-  MAX_HEIGHT: 0.8,
-  FLAT_SHADING: true,
-  COLOR: COLORS.LIGHT_GREEN,
+export const HERO = {
+  SCALE: 0.07,
   X: 0,
-  Y: -30,
-  Z: -15,
+  Y: -0.5,
+  Z: 3.4,
+  ROTATION_Y: 180 * Math.PI / 180,
 };
 
 
 // config
+export const SCENE = {
+  BACKGROUND: COLORS.BLUE,
+};
+
 export const CAMERA = {
-  NEAR: 1,
-  FAR: 1000,
   X: 0,
-  Y: -2,
-  Z: 8,
-  ROTATION_X: 0,
-  ROTATION_Y: 0,
-  ROTATION_Z: 0,
+  Y: 0,
+  Z: 0,
+  NEAR: 1,
   FIELD_OF_VIEW: 60,
+  FAR: 5000,
 };
 
 export const RENDERER = {
-  ALPHA: true,
   ANTIALIAS: true,
   SHADOW_MAP: true,
 };
@@ -90,37 +88,36 @@ export const CONTROLLER = {
 };
 
 export const FOG = {
-  DENSITY: 0.06,
+  DENSITY: 0.25,
   COLOR: COLORS.GRAY,
 };
 
 export const LIGHT = {
-  FAR: CAMERA.FAR / 10,
-  NEAR: CAMERA.NEAR,
-  INTENSITY: 0.5,
-  SKY_COLOR: COLORS.LIGHT_BLUE,
-  GROUND_COLOR: COLORS.BLACK,
-  SUN_LIGHT_COLOR: COLORS.LIGHT_YELLOW,
-  SUN_DIRECTION_X: 30,
-  SUN_DIRECTION_Y: 50,
-  SUN_DIRECTION_Z: 30,
+  SCENE_INTENSITY: 0.4,
+  SUN_INTENSITY: 0.6,
+  SKY_COLOR: COLORS.WHITE,
+  GROUND_COLOR: COLORS.WHITE,
+  SUN_LIGHT_COLOR: COLORS.WHITE,
+  SUN_X: 20,
+  SUN_Y: 20,
+  SUN_Z: -20,
   SHADOW_RESOLUTION: 1024,
 };
 
 export const ANIMATION = {
   GRAVITY: 0.008,
   GLOBE_SPEED: 0.008,
-  OBSTACLES_UPDATE_INTERVAL: 0.6,
-  JUMP_VALUE: 0.2,
+  OBSTACLES_UPDATE_INTERVAL: 1,
+  JUMP_VALUE: 0.3,
   BOUNCE_VALUE: 0.06,
-  HERO_SPEED: (0.008 * GLOBE.RADIUS) / HERO.RADIUS / 5,
+  HERO_SPEED: 0.008,
 };
 
 export const SCORE = {
   LIFES: 3,
   VALUE: 3 * 2,
-  INCREASE_VALUE: 1,
-  DECREASE_VALUE: 2,
+  INCREASE_VALUE: 0.01,
+  DECREASE_VALUE: -1,
 };
 
 export const OBSTACLES = {
