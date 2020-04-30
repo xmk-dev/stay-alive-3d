@@ -1,3 +1,5 @@
+export const GAME_DOM_ELEMENT_ID = 'game-container';
+
 export const COLORS = {
   RED: 0xf25346,
   BROWN: 0x59332e,
@@ -118,6 +120,8 @@ export const SCORE = {
   VALUE: 3 * 2,
   INCREASE_VALUE: 0.01,
   DECREASE_VALUE: -1,
+  VALUE_DOM_ELEMENT_ID: 'current-score-value',
+  LIFES_DOM_ELEMENT_ID: 'current-score-lifes',
 };
 
 export const OBSTACLES = {

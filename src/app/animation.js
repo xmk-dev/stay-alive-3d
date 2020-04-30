@@ -3,17 +3,19 @@ import { round } from 'lodash';
 import { ANIMATION, HERO, GROUND } from '../config';
 import { updateObstacles, hasCollided } from './obstacles';
 
+const COLLISION_ANIMATION_TIMEOUT = 100;
 const SPEED = 0.08;
 const ADD_GROUND_OFFSET = 300;
 const animationState = {
   id: -1,
+  collided: false,
   timeSinceObstaclesUpdate: 0,
   lastGroundZ: GROUND.Z - GROUND.DEPTH / 2,
 };
 
 export const heroAnimation = async (controller, hero, timeDelta) => {
   // TODO: Move to constants
-  const shiftSpeed = 0.04;
+  const shiftSpeed = 0.035;
   const heroScene = hero.gltf.scene;
 
   hero.mixer.update(timeDelta);
@@ -41,6 +43,14 @@ export const heroAnimation = async (controller, hero, timeDelta) => {
   }
 
   heroScene.position.z -= SPEED;
+
+  if (animationState.collided) {
+    heroScene.visible = false;
+    setTimeout(() => {
+      heroScene.visible = true;
+      animationState.collided = false;
+    }, COLLISION_ANIMATION_TIMEOUT);
+  }
 };
 
 export const obstaclesAnimation = (obstacles, hero, scene, score, timeDelta) => {
@@ -57,6 +67,7 @@ export const obstaclesAnimation = (obstacles, hero, scene, score, timeDelta) => 
 
   if (collided) {
     score.decrementScore();
+    animationState.collided = true;
   }
 };
 
@@ -86,10 +97,10 @@ export const runAnimationLoop = (props) => {
 
   score.incrementScore();
 
-  cameraAnimation(camera);
-  groundAnimation(ground, hero);
-  heroAnimation(controller, hero, timeDelta);
   obstaclesAnimation(obstacles, hero, scene, score, timeDelta);
+  heroAnimation(controller, hero, timeDelta);
+  groundAnimation(ground, hero);
+  cameraAnimation(camera);
 
   animationState.id = requestAnimationFrame(() => runAnimationLoop(props));
   renderer.render(scene, camera);

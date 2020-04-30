@@ -5,8 +5,8 @@ export default () => {
   // TODO: move to constants
   const maxVertexHeight = 0.03;
   const color = 0xf0f0f0;
-  const bigRadius = 0.4;
-  const widthSegments = 9;
+  const radius = 0.37;
+  const widthSegments = 7;
   const heightSegments = 6;
 
   const material = new MeshStandardMaterial({
@@ -15,7 +15,7 @@ export default () => {
   });
 
   const rockGeometry = new SphereGeometry(
-    bigRadius,
+    radius,
     widthSegments,
     heightSegments,
   );
