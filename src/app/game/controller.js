@@ -1,10 +1,9 @@
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import {
   CONTROLLER, LANES, KEYS_CODES, EVENTS,
-} from '../config';
+} from './game-config';
 
-export const handleKeyDown = (root, controller) => {
-  root.addEventListener(EVENTS.KEY_DOWN, (e) => {
+export const handleKeyDown = (controller) => {
+  window.addEventListener(EVENTS.KEY_DOWN, (e) => {
     e.preventDefault();
     switch (e.code) {
       case KEYS_CODES.ARROW_UP:
@@ -42,7 +41,7 @@ export const handleKeyDown = (root, controller) => {
 };
 
 
-export default (root, camera, renderer) => {
+export default (camera, renderer) => {
   // eslint-disable-next-line no-new
   // new OrbitControls(camera, renderer.domElement);
 
@@ -79,7 +78,7 @@ export default (root, camera, renderer) => {
     },
   };
 
-  handleKeyDown(root, controller);
+  handleKeyDown(controller);
 
   return controller;
 };

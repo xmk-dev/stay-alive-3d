@@ -1,4 +1,4 @@
-import { EVENTS } from '../config';
+import { EVENTS } from '../app/game/game-config';
 
 export default (root, renderer, camera) => {
   window.addEventListener(EVENTS.RESIZE, () => {

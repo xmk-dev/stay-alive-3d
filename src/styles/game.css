@@ -1,0 +1,30 @@
+#game-container,
+#current-score {
+    top: 0;
+    left: 0;
+    position: fixed;
+}
+
+#game-container {
+    width: 100vw;
+    height: 100vh;
+    z-index: 9998;
+}
+
+#current-score {
+    padding: 20px;
+    z-index: 9999;
+    min-width: 100;
+    text-align: center;
+    letter-spacing: 10;
+}
+
+#current-score-value {
+    position: relative;
+    font-size: 40;
+}
+
+#current-score-lifes {
+    position: relative;
+    font-size: 15px;
+}

@@ -1,6 +1,5 @@
-import { Math as ThreeMath } from 'three';
 import { round } from 'lodash';
-import { ANIMATION, HERO, GROUND } from '../config';
+import { ANIMATION, HERO, GROUND } from './game-config';
 import { updateObstacles, hasCollided } from './obstacles';
 
 const COLLISION_ANIMATION_TIMEOUT = 100;
@@ -53,7 +52,7 @@ export const heroAnimation = async (controller, hero, timeDelta) => {
   }
 };
 
-export const obstaclesAnimation = (obstacles, hero, scene, score, timeDelta) => {
+export const obstaclesAnimation = async (obstacles, hero, scene, score, timeDelta, endGameCallback) => {
   animationState.timeSinceObstaclesUpdate += timeDelta;
 
   const heroScene = hero.gltf.scene;
@@ -68,6 +67,9 @@ export const obstaclesAnimation = (obstacles, hero, scene, score, timeDelta) => 
   if (collided) {
     score.decrementScore();
     animationState.collided = true;
+    if (!score.lifes) {
+      await endGameCallback(round(score.value));
+    }
   }
 };
 
@@ -89,7 +91,7 @@ export const cameraAnimation = (camera) => {
   camera.position.z -= SPEED;
 };
 
-export const runAnimationLoop = (props) => {
+export const runAnimationLoop = async (props, endGameCallback) => {
   const {
     renderer, scene, camera, ground, score, hero, clock, controller, obstacles,
   } = props;
@@ -97,11 +99,11 @@ export const runAnimationLoop = (props) => {
 
   score.incrementScore();
 
-  obstaclesAnimation(obstacles, hero, scene, score, timeDelta);
+  await obstaclesAnimation(obstacles, hero, scene, score, timeDelta, endGameCallback);
   heroAnimation(controller, hero, timeDelta);
   groundAnimation(ground, hero);
   cameraAnimation(camera);
 
-  animationState.id = requestAnimationFrame(() => runAnimationLoop(props));
+  animationState.id = requestAnimationFrame(() => runAnimationLoop(props, endGameCallback));
   renderer.render(scene, camera);
 };

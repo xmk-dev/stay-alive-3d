@@ -3,9 +3,9 @@ import { PerspectiveCamera } from 'three';
 
 // TODO: Move to constants
 const CAMERA = {
-  FIELD_OF_VIEW: 40,
+  FIELD_OF_VIEW: 50,
   NEAR: 1,
-  FAR: 5000,
+  FAR: 15,
   X: 0,
   Y: 0,
   Z: 5,

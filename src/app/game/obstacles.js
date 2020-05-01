@@ -2,11 +2,11 @@ import { Spherical, Vector3, Box3 } from 'three';
 import {
   round, shuffle,
 } from 'lodash';
-import { OBSTACLES, LANES } from '../config';
+import { OBSTACLES, LANES } from './game-config';
 
 // TODO: move to constants
-const ROW_DISTANCE = 2;
-const MIN_INVISIBLE_ROWS = 5;
+const ROW_DISTANCE = 3;
+const MIN_INVISIBLE_ROWS = 8;
 const OBSTACLE_Y = -0.75;
 
 export const obstaclesState = {
@@ -58,7 +58,7 @@ export const addObstacles = (obstacles, hero, scene) => shuffle(obstacles.availa
     isAdded = addObstacle(obstacle, obstacles, scene);
   }
 
-  if (Math.random() > 0.3) {
+  if (Math.random() > 0.2) {
     obstaclesState.currentPositionZ -= ROW_DISTANCE;
   }
 

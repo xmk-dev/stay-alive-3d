@@ -2,8 +2,8 @@ import {
   AnimationMixer, SphereGeometry, MeshStandardMaterial, Mesh,
 } from 'three';
 
-import { loadModelFromUrl } from '../utils/model-loader';
-import { HERO } from '../config';
+import { loadModelFromUrl } from '../utils/model-loader-util';
+import { HERO } from '../app/game/game-config';
 
 export default async () => {
   // TODO: Improve that

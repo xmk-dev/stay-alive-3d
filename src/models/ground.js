@@ -1,8 +1,8 @@
 import {
   BoxGeometry, MeshStandardMaterial, Mesh, Object3D,
 } from 'three';
-import { GROUND } from '../config';
-import { distortGeometry } from '../utils/geometry';
+import { GROUND } from '../app/game/game-config';
+import { distortGeometry } from '../utils/geometry-util';
 
 export default () => {
   // TODO: move to constants

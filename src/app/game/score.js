@@ -1,5 +1,5 @@
 import { round } from 'lodash';
-import { SCORE } from '../config';
+import { SCORE } from './game-config';
 
 export default () => {
   const score = {

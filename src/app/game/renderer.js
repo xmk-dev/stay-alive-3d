@@ -11,7 +11,6 @@ export default (root) => {
 
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(root.offsetWidth, root.offsetHeight);
-  renderer.shadowMap.type = BasicShadowMap;
   renderer.shadowMap.enabled = RENDERER.SHADOW_MAP_ENABLED;
 
   root.appendChild(renderer.domElement);

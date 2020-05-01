@@ -5,10 +5,14 @@ const CompressionPlugin = require('compression-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.js',
+  entry: {
+    game: path.join(__dirname, './src/app/game/index.js'),
+    score: path.join(__dirname, './src/app/score/index.js'),
+    index: path.join(__dirname, './src/index.js'),
+  },
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, './dist'),
+    filename: 'js/[name].[hash].js',
+    path: path.join(__dirname, './public'),
   },
   module: {
     rules: [
@@ -30,17 +34,35 @@ module.exports = {
       new CompressionPlugin(),
       new OptimizeCssAssetsPlugin(),
       new HtmlWebpackPlugin({
-        title: 'Stay Alive 3D',
-        meta: {
-          viewport: 'width=device-width, initial-scale=1, shrink-to-fit=no',
-          filename: 'dist/index.html',
-        },
-      })],
+        chunks: ['index'],
+        filename: 'auth.html',
+        scriptLoading: 'defer',
+        template: path.join(__dirname, './src/templates/auth.html'),
+      }),
+      new HtmlWebpackPlugin({
+        chunks: ['score', 'index'],
+        filename: 'score.html',
+        scriptLoading: 'defer',
+        template: path.join(__dirname, './src/templates/score.html'),
+      }),
+      new HtmlWebpackPlugin({
+        chunks: ['game', 'index'],
+        filename: 'game.html',
+        scriptLoading: 'defer',
+        template: path.join(__dirname, './src/templates/game.html'),
+      }),
+      new HtmlWebpackPlugin({
+        chunks: ['index'],
+        filename: 'index.html',
+        scriptLoading: 'defer',
+      }),
+    ],
   },
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
+    contentBase: path.join(__dirname, './public'),
     compress: true,
-    host: '0.0.0.0',
+    host: 'dev.com',
+    open: true,
     port: 9000,
   },
 };
