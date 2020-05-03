@@ -96,7 +96,8 @@ export const updateObstacles = (obstacles, hero, scene) => {
 };
 
 export const hasCollided = (obstacles, hero) => {
-  const heroBox = new Box3().setFromObject(hero);
+  const heroBoxBase = hero.children && hero.children.length ? hero.children[0] : hero;
+  const heroBox = new Box3().setFromObject(heroBoxBase);
 
   return !!obstacles.used.find((obstacle) => {
     if (obstaclesState.collisions[obstacle.uuid]) { return false; }

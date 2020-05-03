@@ -56,10 +56,14 @@ export const HERO = {
   X: 0,
   Y: -0.5,
   Z: 3.4,
-  SCALE: 0.07,
+  SCALE: 0.08,
+  CAST_SHADOW: true,
+  RECEIVE_SHADOW: true,
+  RUN_ANIMATION_NUMBER: 1,
+  PLAY_RUN_ANIMATION: true,
   // eslint-disable-next-line no-mixed-operators
   ROTATION_Y: 180 * Math.PI / 180,
-  URL: 'https://raw.githubusercontent.com/gfxfundamentals/threejsfundamentals/master/threejs/resources/models/knight/KnightCharacter.gltf',
+  URL: '../assets/hero/hero.gltf',
 };
 
 export const ROCK = {
