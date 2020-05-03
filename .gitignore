@@ -105,3 +105,10 @@ dist
 
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
+
+# Build files from public folder
+public/auth
+public/game
+public/js
+public/score
+public/index.html
