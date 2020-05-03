@@ -8,9 +8,12 @@ export default async () => {
   const gltf = await loadModelFromUrl(heroModelUrl);
   const hero = { gltf };
 
-  if (HERO.PLAY_RUN_ANIMATION){
+  if (HERO.PLAY_RUN_ANIMATION) {
     hero.mixer = new AnimationMixer(gltf.scene);
-    const action = hero.mixer.clipAction(gltf.animations[HERO.RUN_ANIMATION_NUMBER], gltf.scene.children[0]);
+    const action = hero.mixer.clipAction(
+      gltf.animations[HERO.RUN_ANIMATION_NUMBER],
+      gltf.scene.children[0]
+    );
     action.enabled = HERO.PLAY_RUN_ANIMATION;
     action.play();
   }
