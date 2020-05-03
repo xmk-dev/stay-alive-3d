@@ -7,7 +7,7 @@ import { redirectOnSameSite } from './utils/window-util';
   const isSignedIn = !!localStorage.getItem('stayaliveuseridkey');
   const path = window.location.pathname;
 
-  if (path.endsWith(ROUTES.AUTH)){
+  if (path.endsWith(ROUTES.AUTH)) {
     return !isSignedIn ? null : redirectOnSameSite(ROUTES.SCORE);
   }
 
