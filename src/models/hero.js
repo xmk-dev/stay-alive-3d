@@ -12,7 +12,7 @@ export default async () => {
     hero.mixer = new AnimationMixer(gltf.scene);
     const action = hero.mixer.clipAction(
       gltf.animations[HERO.RUN_ANIMATION_NUMBER],
-      gltf.scene.children[0]
+      gltf.scene.children[0],
     );
     action.enabled = HERO.PLAY_RUN_ANIMATION;
     action.play();
