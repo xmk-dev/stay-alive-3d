@@ -1,3 +1,5 @@
+export const HOST = window.location.host;
+
 export const ROUTES = {
   SCORE: '/score',
   GAME: '/game',

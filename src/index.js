@@ -5,17 +5,15 @@ import { redirectOnSameSite } from './utils/window-util';
 
 (() => {
   const isSignedIn = !!localStorage.getItem('stayaliveuseridkey');
-  switch (window.location.pathname) {
-    case ROUTES.AUTH:
-      return !isSignedIn ? null : redirectOnSameSite(ROUTES.SCORE);
+  const path = window.location.pathname;
 
-    case ROUTES.SCORE:
-      return !isSignedIn ? redirectOnSameSite(ROUTES.AUTH) : null;
-
-    case ROUTES.GAME:
-      return !isSignedIn ? redirectOnSameSite(ROUTES.AUTH) : null;
-
-    default:
-      return redirectOnSameSite(ROUTES.AUTH);
+  if (path.endsWith(ROUTES.AUTH)){
+    return !isSignedIn ? null : redirectOnSameSite(ROUTES.SCORE);
   }
+
+  if (path.endsWith(ROUTES.SCORE) || path.endsWith(ROUTES.GAME)) {
+    return !isSignedIn ? redirectOnSameSite(ROUTES.AUTH) : null;
+  }
+
+  return redirectOnSameSite(ROUTES.AUTH);
 })();
