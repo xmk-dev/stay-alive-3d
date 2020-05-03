@@ -11,7 +11,7 @@ export default () => {
     },
     decrementScore: async () => {
       score.value -= SCORE.DECREASE_VALUE;
-      score.lifes -= 1;
+      score.lifes -= SCORE.LIFES_DECREASE_VALUE;
       score.updateScore();
     },
     updateScore: async () => {

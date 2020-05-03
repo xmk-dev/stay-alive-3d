@@ -32,8 +32,6 @@ export const handleKeyDown = (controller) => {
           controller.lane = LANES.CENTER;
         }
         return null;
-      case KEYS_CODES.SPACE:
-        return controller.startShooting();
       default:
         return null;
     }
@@ -41,14 +39,10 @@ export const handleKeyDown = (controller) => {
 };
 
 
-export default (camera, renderer) => {
-  // eslint-disable-next-line no-new
-  // new OrbitControls(camera, renderer.domElement);
-
+export default () => {
   const controller = {
     jump: CONTROLLER.JUMP,
     lane: CONTROLLER.LANE,
-    shoot: CONTROLLER.SHOOT,
     goDown: CONTROLLER.GO_DOWN,
     canJump: CONTROLLER.COULD_JUMP,
     startJump: () => {
@@ -69,12 +63,6 @@ export default (camera, renderer) => {
     },
     endGoDown: () => {
       controller.goDown = false;
-    },
-    startShooting: () => {
-      controller.shoot = true;
-    },
-    endShooting: () => {
-      controller.shoot = false;
     },
   };
 

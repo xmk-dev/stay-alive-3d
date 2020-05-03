@@ -5,7 +5,6 @@ import { GROUND } from '../app/game/game-config';
 import { distortGeometry } from '../utils/geometry-util';
 
 export default () => {
-  // TODO: move to constants
   const geometry = new BoxGeometry(
     GROUND.WIDTH,
     GROUND.HEIGHT,
@@ -14,8 +13,8 @@ export default () => {
     GROUND.HEIGHT_SEGMENTS,
     GROUND.DEPTH_SEGMENTS,
   );
-  // TODO: use grounds as children of main mesh
-  distortGeometry(geometry, 0.15);
+
+  distortGeometry(geometry, GROUND.DISTORTION_VALUE);
 
   const material = new MeshStandardMaterial({
     color: GROUND.COLOR,
@@ -23,8 +22,8 @@ export default () => {
   });
   const groundPiece = new Mesh(geometry, material);
 
-  groundPiece.castShadow = false;
-  groundPiece.receiveShadow = true;
+  groundPiece.castShadow = GROUND.CAST_SHADOW;
+  groundPiece.receiveShadow = GROUND.RECEIVE_SHADOW;
 
   const ground = new Object3D();
   ground.add(groundPiece);

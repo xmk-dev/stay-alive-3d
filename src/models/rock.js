@@ -1,30 +1,24 @@
 import { MeshStandardMaterial, SphereGeometry, Mesh } from 'three';
 import { distortGeometry } from '../utils/geometry-util';
+import { ROCK } from '../app/game/game-config';
 
 export default () => {
-  // TODO: move to constants
-  const maxVertexHeight = 0.03;
-  const color = 0xf0f0f0;
-  const radius = 0.37;
-  const widthSegments = 10;
-  const heightSegments = 10;
-
   const material = new MeshStandardMaterial({
-    color,
-    flatShading: true,
+    color: ROCK.COLOR,
+    flatShading: ROCK.FLAT_SHADING,
   });
 
   const rockGeometry = new SphereGeometry(
-    radius,
-    widthSegments,
-    heightSegments,
+    ROCK.RADIUS,
+    ROCK.WIDTH_SEGMENTS,
+    ROCK.HEIGHT_SEGMENTS,
   );
 
-  distortGeometry(rockGeometry, maxVertexHeight);
+  distortGeometry(rockGeometry, ROCK.DISTORTION_VALUE);
 
   const rock = new Mesh(rockGeometry, material);
-  rock.castShadow = true;
-  rock.receiveShadow = true;
+  rock.castShadow = ROCK.CAST_SHADOW;
+  rock.receiveShadow = ROCK.RECEIVE_SHADOW;
 
   return rock;
 };

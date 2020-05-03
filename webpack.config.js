@@ -35,19 +35,19 @@ module.exports = {
       new OptimizeCssAssetsPlugin(),
       new HtmlWebpackPlugin({
         chunks: ['index'],
-        filename: 'auth.html',
+        filename: 'auth/index.html',
         scriptLoading: 'defer',
         template: path.join(__dirname, './src/templates/auth.html'),
       }),
       new HtmlWebpackPlugin({
         chunks: ['score', 'index'],
-        filename: 'score.html',
+        filename: 'score/index.html',
         scriptLoading: 'defer',
         template: path.join(__dirname, './src/templates/score.html'),
       }),
       new HtmlWebpackPlugin({
         chunks: ['game', 'index'],
-        filename: 'game.html',
+        filename: 'game/index.html',
         scriptLoading: 'defer',
         template: path.join(__dirname, './src/templates/game.html'),
       }),

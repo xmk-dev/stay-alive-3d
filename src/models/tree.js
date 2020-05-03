@@ -1,51 +1,43 @@
-import { MeshStandardMaterial, SphereGeometry, CylinderGeometry, Mesh, Group } from 'three';
+import {
+  MeshStandardMaterial, SphereGeometry, CylinderGeometry, Mesh, Group,
+} from 'three';
 import { distortGeometry } from '../utils/geometry-util';
+import { TREE } from '../app/game/game-config';
 
 export default () => {
-    // TODO: move to constants
-    const maxVertexHeight = 0.05;
-    const treeColor = 0x33ff33;
-    const woodColor = 0x23190f;
-    const treeRadius = 0.25;
-    const treeWidthSegments = 8;
-    const treeHeightSegments = 8;
-    const woodRadius = 0.05;
-    const woodHeight = 1;
+  const treeMaterial = new MeshStandardMaterial({
+    color: TREE.treeColor,
+    flatShading: TREE.FLAT_SHADING,
+  });
 
-    const treeMaterial = new MeshStandardMaterial({
-        color: treeColor,
-        flatShading: true,
-    });
+  const treeGeometry = new SphereGeometry(
+    TREE.TREE_RADIUS,
+    TREE.TREE_WIDTH_SEGMENTS,
+    TREE.TREE_HEIGHT_SEGMENTS,
+  );
 
-    const treeGeometry = new SphereGeometry(
-        treeRadius,
-        treeWidthSegments,
-        treeHeightSegments,
-    );
+  distortGeometry(treeGeometry, TREE.DISTORTION_VALUE);
 
-    distortGeometry(treeGeometry, maxVertexHeight);
+  const tree = new Mesh(treeGeometry, treeMaterial);
+  tree.castShadow = TREE.CAST_SHADOW;
+  tree.receiveShadow = TREE.RECEIVE_SHADOW;
+  tree.translateY(TREE.WOOD_HEIGHT);
 
-    const tree = new Mesh(treeGeometry, treeMaterial);
-    tree.castShadow = true;
-    tree.receiveShadow = true;
-    tree.translateY(woodHeight);
+  const woodMaterial = new MeshStandardMaterial({
+    color: TREE.woodColor,
+    flatShading: TREE.FLAT_SHADING,
+  });
 
-    const woodMaterial = new MeshStandardMaterial({
-        color: woodColor,
-        flatShading: true,
-    });
+  const woodGeometry = new CylinderGeometry(TREE.WOOD_RADIUS, TREE.WOOD_RADIUS, TREE.WOOD_HEIGHT);
 
-    const woodGeometry = new CylinderGeometry(woodRadius, woodRadius, woodHeight);
+  const wood = new Mesh(woodGeometry, woodMaterial);
+  wood.castShadow = TREE.CAST_SHADOW;
+  wood.receiveShadow = TREE.RECEIVE_SHADOW;
+  wood.translateY(TREE.WOOD_HEIGHT / 2);
 
-    const wood = new Mesh(woodGeometry, woodMaterial);
-    wood.castShadow = true;
-    wood.receiveShadow = true;
-    wood.translateY(woodHeight / 2);
+  const completeTree = new Group();
+  completeTree.add(tree);
+  completeTree.add(wood);
 
-    const completeTree = new Group();
-    completeTree.add(tree);
-    completeTree.add(wood);
-
-
-    return completeTree;
+  return completeTree;
 };

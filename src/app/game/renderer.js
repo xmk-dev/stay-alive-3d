@@ -1,10 +1,5 @@
-import { WebGLRenderer, BasicShadowMap } from 'three';
-
-// TODO: Move to constants
-const RENDERER = {
-  ANTIALIAS: false,
-  SHADOW_MAP_ENABLED: true,
-}
+import { WebGLRenderer } from 'three';
+import { RENDERER } from './game-config';
 
 export default (root) => {
   const renderer = new WebGLRenderer({ antialias: RENDERER.ANTIALIAS });

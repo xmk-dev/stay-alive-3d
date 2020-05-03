@@ -1,4 +1,4 @@
-import { GAME_DOM_ELEMENT_ID } from './game-config';
+import { GAME_DOM_ELEMENT_ID, OBSTACLES } from './game-config';
 import createResizeHandler from '../../utils/resize-handler-util';
 import { createObstacles } from './obstacles';
 import { runAnimationLoop } from './animation';
@@ -17,18 +17,18 @@ import { ROUTES, LOCAL_STORAGE_USER_ID_KEY } from '../../config';
 import { redirectOnSameSite } from '../../utils/window-util';
 import { saveScore } from '../../api/score-api';
 
-const init = async (root) => {
+export const init = async (root) => {
   const clock = createClock();
   const ground = createGround();
+  const lights = createLights();
   const hero = await createHero();
   const score = createScore(root);
   const camera = createCamera(root);
+  const controller = createController();
   const renderer = createRenderer(root);
-  const { sceneLight, sunLight } = createLights();
-  const scene = createScene([sceneLight, sunLight, hero.gltf.scene, ground]);
-  const obstacles = createObstacles([createRock, createTree], 50);
+  const scene = createScene([...lights, hero.gltf.scene, ground]);
+  const obstacles = createObstacles([createRock, createTree], OBSTACLES.COUNT);
 
-  const controller = createController(camera, renderer);
   createResizeHandler(root, renderer, camera);
 
   return {
@@ -44,7 +44,7 @@ const init = async (root) => {
   };
 };
 
-const endGame = async (scoreValue) => {
+export const endGame = async (scoreValue) => {
   const id = localStorage.getItem(LOCAL_STORAGE_USER_ID_KEY);
   await saveScore(id, scoreValue);
   redirectOnSameSite(ROUTES.SCORE);

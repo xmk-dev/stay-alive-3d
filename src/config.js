@@ -1,7 +1,7 @@
 export const ROUTES = {
-  SCORE: '/score.html',
-  GAME: '/game.html',
-  AUTH: '/auth.html',
+  SCORE: '/score',
+  GAME: '/game',
+  AUTH: '/auth',
 };
 
 export const LOCAL_STORAGE_USER_ID_KEY = 'stayaliveuseridkey';

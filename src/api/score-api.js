@@ -6,7 +6,7 @@ export const fetchFromScoreApi = async (endpointPath, method = 'GET', body) => {
     method,
     body: JSON.stringify(body),
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
   });
   return res.json();

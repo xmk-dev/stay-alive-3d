@@ -2,9 +2,6 @@ import { round } from 'lodash';
 import { ANIMATION, HERO, GROUND } from './game-config';
 import { updateObstacles, hasCollided } from './obstacles';
 
-const COLLISION_ANIMATION_TIMEOUT = 100;
-const SPEED = 0.08;
-const ADD_GROUND_OFFSET = 300;
 const animationState = {
   id: -1,
   collided: false,
@@ -13,24 +10,28 @@ const animationState = {
 };
 
 export const heroAnimation = async (controller, hero, timeDelta) => {
-  // TODO: Move to constants
-  const shiftSpeed = 0.035;
   const heroScene = hero.gltf.scene;
 
   hero.mixer.update(timeDelta);
 
-  if (heroScene.position.y >= 0.1) {
+  if (heroScene.position.y >= ANIMATION.END_JUMP_THRESHOLD) {
     controller.endJump();
   }
 
   if (controller.jump) {
-    heroScene.position.y += shiftSpeed;
+    heroScene.position.y += ANIMATION.HERO_SHIFT_SPEED;
   }
 
   if (heroScene.position.y > HERO.Y) {
-    const jumpMultiplier = controller.jump ? 0.2 : 1;
-    const goDownMultipier = controller.goDown && !controller.jump ? 2 : 1;
-    heroScene.position.y -= shiftSpeed * jumpMultiplier * goDownMultipier;
+    const jumpMultiplier = controller.jump
+      ? ANIMATION.JUMP_GRAVITY_MULTIPLIER
+      : ANIMATION.NO_GRAVITY_MULTIPLIER;
+
+    const goDownMultipier = controller.goDown && !controller.jump
+      ? ANIMATION.GO_DOWN_GRAVITY_MULTIPLIER
+      : ANIMATION.NO_GRAVITY_MULTIPLIER;
+
+    heroScene.position.y -= ANIMATION.HERO_SHIFT_SPEED * jumpMultiplier * goDownMultipier;
   } else {
     controller.endGoDown();
     controller.enableJump();
@@ -38,21 +39,23 @@ export const heroAnimation = async (controller, hero, timeDelta) => {
 
   if (round(heroScene.position.x, 1) !== controller.lane) {
     const sideSign = controller.lane > heroScene.position.x ? 1 : -1;
-    heroScene.position.x += sideSign * shiftSpeed;
+    heroScene.position.x += sideSign * ANIMATION.HERO_SHIFT_SPEED;
   }
 
-  heroScene.position.z -= SPEED;
+  heroScene.position.z -= ANIMATION.RUN_SPEED;
 
   if (animationState.collided) {
     heroScene.visible = false;
     setTimeout(() => {
       heroScene.visible = true;
       animationState.collided = false;
-    }, COLLISION_ANIMATION_TIMEOUT);
+    }, ANIMATION.COLLISION_TIMEOUT_MS);
   }
 };
 
-export const obstaclesAnimation = async (obstacles, hero, scene, score, timeDelta, endGameCallback) => {
+export const obstaclesAnimation = async (
+  obstacles, hero, scene, score, timeDelta, endGameCallback,
+) => {
   animationState.timeSinceObstaclesUpdate += timeDelta;
 
   const heroScene = hero.gltf.scene;
@@ -76,9 +79,13 @@ export const obstaclesAnimation = async (obstacles, hero, scene, score, timeDelt
 export const groundAnimation = (ground, hero) => {
   const heroScene = hero.gltf.scene;
 
-  if (round(heroScene.position.z) > animationState.lastGroundZ + ADD_GROUND_OFFSET) { return; }
+  if (round(heroScene.position.z) > animationState.lastGroundZ + ANIMATION.ADD_GROUND_THRESHOLD) {
+    return;
+  }
 
-  ground.children = ground.children.filter((groundPiece) => groundPiece.position.z - GROUND.DEPTH < heroScene.position.z);
+  ground.children = ground.children.filter(
+    (groundPiece) => groundPiece.position.z - GROUND.DEPTH < heroScene.position.z,
+  );
 
   const lastGroundPiece = ground.children[0];
   const newGroundPiece = lastGroundPiece.clone();
@@ -88,7 +95,7 @@ export const groundAnimation = (ground, hero) => {
 };
 
 export const cameraAnimation = (camera) => {
-  camera.position.z -= SPEED;
+  camera.position.z -= ANIMATION.RUN_SPEED;
 };
 
 export const runAnimationLoop = async (props, endGameCallback) => {
