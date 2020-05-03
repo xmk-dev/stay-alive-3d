@@ -1,20 +1,17 @@
 import './styles/main.css';
 import './styles/bootstrap.css';
-import { ROUTES, BASE_URL } from './config';
+import { ROUTES } from './config';
 import { redirectOnSameSite } from './utils/window-util';
 
 (() => {
   const isSignedIn = !!localStorage.getItem('stayaliveuseridkey');
-  const url = window.location.href;
+  const path = window.location.pathname;
 
-  if (url === `${BASE_URL}${ROUTES.AUTH}/`) {
+  if (path.includes(ROUTES.AUTH)) {
     return !isSignedIn ? null : redirectOnSameSite(ROUTES.SCORE);
   }
 
-  if (
-    url === `${BASE_URL}${ROUTES.SCORE}/`
-    || url === `${BASE_URL}${ROUTES.GAME}/`
-  ) {
+  if (path.includes(ROUTES.SCORE) || path.includes(ROUTES.GAME)) {
     return !isSignedIn ? redirectOnSameSite(ROUTES.AUTH) : null;
   }
 
