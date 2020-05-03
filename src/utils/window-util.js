@@ -1,4 +1,5 @@
+import { BASE_URL } from '../config';
+
 export const redirectOnSameSite = (path) => {
-  const { protocol, host } = window.location;
-  window.location.replace(`${protocol}//${host}${path}`);
+  window.location.replace(`${BASE_URL}${path}`);
 };

@@ -1,4 +1,4 @@
-export const HOST = window.location.host;
+export const BASE_URL = window.location.href.includes('dev') ? 'http://dev.com:9000' : 'https://marcinxkaminski.github.io/stay-alive-3d';
 
 export const ROUTES = {
   SCORE: '/score',
