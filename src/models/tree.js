@@ -2,7 +2,7 @@ import {
   MeshStandardMaterial, SphereGeometry, CylinderGeometry, Mesh, Group,
 } from 'three';
 import { distortGeometry } from '../utils/geometry-util';
-import { TREE } from '../app/game/game-config';
+import { TREE } from '../config';
 
 export default () => {
   const treeMaterial = new MeshStandardMaterial({

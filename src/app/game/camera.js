@@ -1,5 +1,5 @@
 import { PerspectiveCamera } from 'three';
-import { CAMERA } from './game-config';
+import { CAMERA } from '../../config';
 
 export default () => {
   const camera = new PerspectiveCamera(

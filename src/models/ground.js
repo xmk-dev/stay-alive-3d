@@ -1,7 +1,7 @@
 import {
   BoxGeometry, MeshStandardMaterial, Mesh, Object3D,
 } from 'three';
-import { GROUND } from '../app/game/game-config';
+import { GROUND } from '../config';
 import { distortGeometry } from '../utils/geometry-util';
 
 export default () => {

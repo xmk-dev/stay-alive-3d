@@ -1,4 +1,6 @@
-import { GAME_DOM_ELEMENT_ID, OBSTACLES } from './game-config';
+import {
+  GAME_DOM_ELEMENT_ID, OBSTACLES, ROUTES, LOCAL_STORAGE_USER_ID_KEY,
+} from '../../config';
 import createResizeHandler from '../../utils/resize-handler-util';
 import { createObstacles } from './obstacles';
 import { runAnimationLoop } from './animation';
@@ -13,7 +15,7 @@ import createLights from './lights';
 import createScene from './scene';
 import createClock from './clock';
 import createScore from './score';
-import { ROUTES, LOCAL_STORAGE_USER_ID_KEY } from '../../config';
+
 import { redirectOnSameSite } from '../../utils/window-util';
 import { saveScore } from '../../api/score-api';
 

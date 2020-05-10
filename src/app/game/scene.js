@@ -1,5 +1,5 @@
 import { Scene, Fog } from 'three';
-import { SCENE } from './game-config';
+import { SCENE } from '../../config';
 
 export default (items = []) => {
   const scene = new Scene();

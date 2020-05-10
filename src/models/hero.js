@@ -1,7 +1,7 @@
 import { AnimationMixer } from 'three';
 
 import { loadModelFromUrl } from '../utils/model-loader-util';
-import { HERO } from '../app/game/game-config';
+import { HERO } from '../config';
 
 export default async () => {
   const heroModelUrl = HERO.URL;

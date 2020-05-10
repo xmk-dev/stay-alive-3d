@@ -1,5 +1,5 @@
 import { HemisphereLight, DirectionalLight } from 'three';
-import { LIGHTS } from './game-config';
+import { LIGHTS } from '../../config';
 
 export default () => {
   const sceneLight = new HemisphereLight(

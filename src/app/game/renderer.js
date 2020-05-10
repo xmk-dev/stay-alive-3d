@@ -1,8 +1,8 @@
 import { WebGLRenderer } from 'three';
-import { RENDERER } from './game-config';
+import { RENDERER } from '../../config';
 
 export default (root) => {
-  const renderer = new WebGLRenderer({ antialias: RENDERER.ANTIALIAS });
+  const renderer = new WebGLRenderer();
 
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(root.offsetWidth, root.offsetHeight);

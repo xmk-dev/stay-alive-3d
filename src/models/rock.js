@@ -1,6 +1,6 @@
 import { MeshStandardMaterial, SphereGeometry, Mesh } from 'three';
 import { distortGeometry } from '../utils/geometry-util';
-import { ROCK } from '../app/game/game-config';
+import { ROCK } from '../config';
 
 export default () => {
   const material = new MeshStandardMaterial({

@@ -1,18 +1,17 @@
 import { round } from 'lodash';
-import { ANIMATION, HERO, GROUND } from './game-config';
+import { ANIMATION, HERO, GROUND } from '../../config';
 import { updateObstacles, hasCollided } from './obstacles';
 
 const animationState = {
   id: -1,
   collided: false,
   timeSinceObstaclesUpdate: 0,
+  runSpeed: ANIMATION.RUN_SPEED,
   lastGroundZ: GROUND.Z - GROUND.DEPTH / 2,
 };
 
-export const heroAnimation = async (controller, hero, timeDelta) => {
-  const heroScene = hero.gltf.scene;
-
-  hero.mixer.update(timeDelta);
+export const heroAnimation = async (controller, heroScene, heroMixer, timeDelta) => {
+  heroMixer.update(timeDelta);
 
   if (heroScene.position.y >= ANIMATION.END_JUMP_THRESHOLD) {
     controller.endJump();
@@ -39,10 +38,10 @@ export const heroAnimation = async (controller, hero, timeDelta) => {
 
   if (round(heroScene.position.x, 1) !== controller.lane) {
     const sideSign = controller.lane > heroScene.position.x ? 1 : -1;
-    heroScene.position.x += sideSign * ANIMATION.HERO_SHIFT_SPEED;
+    heroScene.position.x += sideSign * ANIMATION.HERO_CHANGE_LANE_SPEED;
   }
 
-  heroScene.position.z -= ANIMATION.RUN_SPEED;
+  heroScene.position.z -= animationState.runSpeed;
 
   if (animationState.collided) {
     heroScene.visible = false;
@@ -54,38 +53,39 @@ export const heroAnimation = async (controller, hero, timeDelta) => {
 };
 
 export const obstaclesAnimation = async (
-  obstacles, hero, scene, score, timeDelta, endGameCallback,
+  obstacles, heroScene, scene, score, timeDelta, endGameCallback,
 ) => {
   animationState.timeSinceObstaclesUpdate += timeDelta;
-
-  const heroScene = hero.gltf.scene;
 
   if (animationState.timeSinceObstaclesUpdate > ANIMATION.OBSTACLES_UPDATE_INTERVAL) {
     updateObstacles(obstacles, heroScene, scene);
     animationState.timeSinceObstaclesUpdate = 0;
   }
 
+  if (animationState.collided) { return; }
+
   const collided = hasCollided(obstacles, heroScene);
 
   if (collided) {
-    score.decrementScore();
     animationState.collided = true;
+    score.decrementScore();
     if (!score.lifes) {
-      await endGameCallback(round(score.value));
+      endGameCallback(round(score.value));
     }
+  } else {
+    score.incrementScore();
+    animationState.runSpeed += ANIMATION.RUN_SPEED_INCREMENT;
   }
 };
 
-export const groundAnimation = (ground, hero) => {
-  const heroScene = hero.gltf.scene;
+export const groundAnimation = async (ground, heroScene) => {
+  const heroPositionZ = heroScene.position.z;
 
-  if (round(heroScene.position.z) > animationState.lastGroundZ + ANIMATION.ADD_GROUND_THRESHOLD) {
+  if (round(heroPositionZ) > animationState.lastGroundZ + ANIMATION.ADD_GROUND_THRESHOLD) {
     return;
   }
 
-  ground.children = ground.children.filter(
-    (groundPiece) => groundPiece.position.z - GROUND.DEPTH < heroScene.position.z,
-  );
+  ground.children = ground.children.filter((g) => g.position.z - GROUND.DEPTH < heroPositionZ);
 
   const lastGroundPiece = ground.children[0];
   const newGroundPiece = lastGroundPiece.clone();
@@ -94,8 +94,8 @@ export const groundAnimation = (ground, hero) => {
   ground.add(newGroundPiece);
 };
 
-export const cameraAnimation = (camera) => {
-  camera.position.z -= ANIMATION.RUN_SPEED;
+export const cameraAnimation = async (camera) => {
+  camera.position.z -= animationState.runSpeed;
 };
 
 export const runAnimationLoop = async (props, endGameCallback) => {
@@ -103,14 +103,14 @@ export const runAnimationLoop = async (props, endGameCallback) => {
     renderer, scene, camera, ground, score, hero, clock, controller, obstacles,
   } = props;
   const timeDelta = clock.getDelta();
+  const heroScene = hero.gltf.scene;
+  const heroMixer = hero.mixer;
 
-  score.incrementScore();
-
-  await obstaclesAnimation(obstacles, hero, scene, score, timeDelta, endGameCallback);
-  heroAnimation(controller, hero, timeDelta);
-  groundAnimation(ground, hero);
+  await obstaclesAnimation(obstacles, heroScene, scene, score, timeDelta, endGameCallback);
+  heroAnimation(controller, heroScene, heroMixer, timeDelta);
+  groundAnimation(ground, heroScene);
   cameraAnimation(camera);
 
-  animationState.id = requestAnimationFrame(() => runAnimationLoop(props, endGameCallback));
+  requestAnimationFrame(() => runAnimationLoop(props, endGameCallback));
   renderer.render(scene, camera);
 };

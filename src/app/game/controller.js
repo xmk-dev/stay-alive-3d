@@ -1,6 +1,6 @@
 import {
   CONTROLLER, LANES, KEYS_CODES, EVENTS,
-} from './game-config';
+} from '../../config';
 
 export const handleKeyDown = (controller) => {
   window.addEventListener(EVENTS.KEY_DOWN, (e) => {
@@ -9,9 +9,6 @@ export const handleKeyDown = (controller) => {
       case KEYS_CODES.ARROW_UP:
         return controller.startJump();
       case KEYS_CODES.ARROW_LEFT:
-        if (controller.lane === LANES.LEFT) {
-          return null;
-        }
         if (controller.lane === LANES.CENTER) {
           controller.lane = LANES.LEFT;
         }
@@ -22,9 +19,6 @@ export const handleKeyDown = (controller) => {
       case KEYS_CODES.ARROW_DOWN:
         return controller.startGoDown();
       case KEYS_CODES.ARROW_RIGHT:
-        if (controller.lane === LANES.RIGHT) {
-          return null;
-        }
         if (controller.lane === LANES.CENTER) {
           controller.lane = LANES.RIGHT;
         }

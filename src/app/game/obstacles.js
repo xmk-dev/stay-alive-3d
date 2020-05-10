@@ -1,19 +1,16 @@
 import { Box3 } from 'three';
 import { shuffle } from 'lodash';
-import { OBSTACLES, LANES } from './game-config';
+import { OBSTACLES, LANES } from '../../config';
 
 export const obstaclesState = {
   currentPositionZ: OBSTACLES.START_Z_POSITION,
-  collisions: {},
   positions: {},
 };
 
-export const shouldAddObstacle = (hero) => (
-  hero.position.z < (
-    obstaclesState.currentPositionZ
-    + OBSTACLES.ROW_DISTANCE
-    * OBSTACLES.MIN_INVISIBLE_ROWS
-  )
+export const shouldAddObstacleForHeroPositionZ = (heroPositionZ) => heroPositionZ < (
+  obstaclesState.currentPositionZ
+  + OBSTACLES.ROW_DISTANCE
+  * OBSTACLES.MIN_INVISIBLE_ROWS
 );
 
 export const getPositionKey = (x, z) => `${x}-${z}`;
@@ -41,7 +38,6 @@ export const addObstacle = (obstacle, obstacles, scene) => {
 
   obstaclesState.positions[obstacle.uuid] = getPositionKey(availableLane, currentPositionZ);
   obstacle.position.set(availableLane, OBSTACLES.OBSTACLE_Y, currentPositionZ);
-  obstaclesState.collisions[obstacle.uuid] = false;
   obstacle.visible = true;
   scene.add(obstacle);
   obstacles.used.push(obstacle);
@@ -49,34 +45,28 @@ export const addObstacle = (obstacle, obstacles, scene) => {
   return true;
 };
 
-export const addObstacles = (obstacles, hero, scene) => shuffle(obstacles.available).filter(
-  (obstacle) => {
-    if (!shouldAddObstacle(hero)) { return true; }
-
-    let isAdded = false;
-
-    if (Math.random() > OBSTACLES.ADD_OBSTACLE_PROBABILITY) {
-      isAdded = addObstacle(obstacle, obstacles, scene);
-    }
-
+export const addObstacles = (obstacles, hero, scene) => shuffle(obstacles.available)
+  .filter((obstacle) => {
     if (Math.random() > OBSTACLES.CHANGE_ROW_PROBABILITY) {
       obstaclesState.currentPositionZ -= OBSTACLES.ROW_DISTANCE;
     }
 
-    return !isAdded;
-  },
-);
+    if (Math.random() > OBSTACLES.ADD_OBSTACLE_PROBABILITY) {
+      return !addObstacle(obstacle, obstacles, scene);
+    }
+
+    return true;
+  });
 
 export const removeObstacle = (obstacle, obstacles, scene) => {
-  delete obstaclesState.collisions[obstacle.uuid];
   delete obstaclesState.positions[obstacle.uuid];
   obstacle.visible = false;
   scene.remove(obstacle);
   obstacles.available.push(obstacle);
 };
 
-export const removeInvisibleObstacles = (obstacles, hero, scene) => obstacles.used.filter(
-  (obstacle) => {
+export const removeInvisibleObstacles = (obstacles, hero, scene) => obstacles.used
+  .filter((obstacle) => {
     const isBehindHero = hero.position.z < obstacle.position.z - OBSTACLES.ROW_DISTANCE;
 
     if (isBehindHero) {
@@ -84,32 +74,21 @@ export const removeInvisibleObstacles = (obstacles, hero, scene) => obstacles.us
     }
 
     return !isBehindHero;
-  },
-);
+  });
 
 export const updateObstacles = (obstacles, hero, scene) => {
   obstacles.used = removeInvisibleObstacles(obstacles, hero, scene);
 
-  if (!shouldAddObstacle(hero)) { return; }
+  if (!shouldAddObstacleForHeroPositionZ(hero.position.z)) { return; }
 
   obstacles.available = addObstacles(obstacles, hero, scene);
 };
 
 export const hasCollided = (obstacles, hero) => {
-  const heroBoxBase = hero.children && hero.children.length ? hero.children[0] : hero;
-  const heroBox = new Box3().setFromObject(heroBoxBase);
+  const heroBox = new Box3().setFromObject(hero.children[0]);
 
   return !!obstacles.used.find((obstacle) => {
-    if (obstaclesState.collisions[obstacle.uuid]) { return false; }
-
     const obstacleBox = new Box3().setFromObject(obstacle);
-
-    const collided = obstacleBox.intersectsBox(heroBox);
-
-    if (collided) {
-      obstaclesState.collisions[obstacle.uuid] = true;
-    }
-
-    return collided;
+    return obstacleBox.intersectsBox(heroBox);
   });
 };

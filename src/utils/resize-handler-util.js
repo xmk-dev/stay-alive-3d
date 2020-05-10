@@ -1,6 +1,6 @@
-import { EVENTS } from '../app/game/game-config';
+import { EVENTS } from '../config';
 
-export default (root, renderer, camera) => {
+export default async (root, renderer, camera) => {
   window.addEventListener(EVENTS.RESIZE, () => {
     const height = root.offsetHeight;
     const width = root.offsetWidth;
