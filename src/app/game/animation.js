@@ -1,6 +1,6 @@
-import { round } from 'lodash';
 import { ANIMATION, HERO, GROUND } from '../../config';
 import { updateObstacles, hasCollided } from './obstacles';
+import { round } from '../../utils/math-util';
 
 const animationState = {
   id: -1,
@@ -13,15 +13,17 @@ const animationState = {
 export const heroAnimation = async (controller, heroScene, heroMixer, timeDelta) => {
   heroMixer.update(timeDelta);
 
-  if (heroScene.position.y >= ANIMATION.END_JUMP_THRESHOLD) {
-    controller.endJump();
-  }
-
   if (controller.jump) {
     heroScene.position.y += ANIMATION.HERO_SHIFT_SPEED;
   }
 
-  if (heroScene.position.y > HERO.Y) {
+  const heroPositionY = heroScene.position.y;
+
+  if (heroPositionY > HERO.Y) {
+    if (heroPositionY >= ANIMATION.END_JUMP_THRESHOLD) {
+      controller.endJump();
+    }
+
     const jumpMultiplier = controller.jump
       ? ANIMATION.JUMP_GRAVITY_MULTIPLIER
       : ANIMATION.NO_GRAVITY_MULTIPLIER;
@@ -36,8 +38,9 @@ export const heroAnimation = async (controller, heroScene, heroMixer, timeDelta)
     controller.enableJump();
   }
 
-  if (round(heroScene.position.x, 1) !== controller.lane) {
-    const sideSign = controller.lane > heroScene.position.x ? 1 : -1;
+  const heroPositionX = heroScene.position.x;
+  if (round(heroPositionX, 1) !== round(controller.lane, 1)) {
+    const sideSign = controller.lane > heroPositionX ? 1 : -1;
     heroScene.position.x += sideSign * ANIMATION.HERO_CHANGE_LANE_SPEED;
   }
 
@@ -70,7 +73,7 @@ export const obstaclesAnimation = async (
     animationState.collided = true;
     score.decrementScore();
     if (!score.lifes) {
-      endGameCallback(round(score.value));
+      endGameCallback(Math.round(score.value));
     }
   } else {
     score.incrementScore();
@@ -81,7 +84,7 @@ export const obstaclesAnimation = async (
 export const groundAnimation = async (ground, heroScene) => {
   const heroPositionZ = heroScene.position.z;
 
-  if (round(heroPositionZ) > animationState.lastGroundZ + ANIMATION.ADD_GROUND_THRESHOLD) {
+  if (Math.round(heroPositionZ) > animationState.lastGroundZ + ANIMATION.ADD_GROUND_THRESHOLD) {
     return;
   }
 

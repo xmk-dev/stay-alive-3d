@@ -1,5 +1,5 @@
 import { Box3 } from 'three';
-import { shuffle } from 'lodash';
+import { shuffle } from '../../utils/math-util';
 import { OBSTACLES, LANES } from '../../config';
 
 export const obstaclesState = {
@@ -28,11 +28,10 @@ export const createObstacles = (creators, countForType) => {
 
 export const addObstacle = (obstacle, obstacles, scene) => {
   const { currentPositionZ } = obstaclesState;
-  const availableLane = shuffle(LANES).find(
-    (x) => !Object
+  const availableLane = shuffle(Object.values(LANES))
+    .find((x) => !Object
       .values(obstaclesState.positions)
-      .includes(getPositionKey(x, currentPositionZ)),
-  );
+      .includes(getPositionKey(x, currentPositionZ)));
 
   if (Number.isNaN(availableLane)) { return false; }
 

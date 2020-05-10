@@ -1,4 +1,3 @@
-import { round } from 'lodash';
 import { SCORE } from '../../config';
 
 export default () => {
@@ -15,7 +14,7 @@ export default () => {
       score.updateScoreDOM();
     },
     updateScoreDOM: async () => {
-      document.getElementById(SCORE.VALUE_DOM_ELEMENT_ID).innerHTML = round(score.value);
+      document.getElementById(SCORE.VALUE_DOM_ELEMENT_ID).innerHTML = Math.round(score.value);
       document.getElementById(SCORE.LIFES_DOM_ELEMENT_ID).innerHTML = score.lifes ? Array(score.lifes).fill(0).map(() => '❤️').join('') : '';
     },
   };
