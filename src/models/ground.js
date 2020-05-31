@@ -3,8 +3,9 @@ import {
 } from 'three';
 import { GROUND } from '../config';
 import { distortGeometry } from '../utils/geometry-util';
+import { loadTextureFromUrl } from '../utils/texture-loader-util';
 
-export default () => {
+export default async () => {
   const geometry = new BoxGeometry(
     GROUND.WIDTH,
     GROUND.HEIGHT,
@@ -16,7 +17,9 @@ export default () => {
 
   distortGeometry(geometry, GROUND.DISTORTION_VALUE);
 
+  const texture = await loadTextureFromUrl(GROUND.TEXTURE_PATH);
   const material = new MeshStandardMaterial({
+    map: texture,
     color: GROUND.COLOR,
     flatShading: GROUND.FLAT_SHADING,
   });

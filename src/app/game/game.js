@@ -21,14 +21,14 @@ import { saveScore } from '../../api/score-api';
 
 export const init = async (root) => {
   const clock = createClock();
-  const ground = createGround();
+  const ground = await createGround();
   const lights = createLights();
   const hero = await createHero();
   const score = createScore(root);
   const camera = createCamera(root);
   const controller = createController();
   const renderer = createRenderer(root);
-  const scene = createScene([...lights, hero.gltf.scene, ground]);
+  const scene = createScene([...lights, hero.scene, ground]);
   const obstacles = createObstacles([createRock, createTree], OBSTACLES.COUNT);
 
   createResizeHandler(root, renderer, camera);

@@ -1,4 +1,4 @@
-export const BASE_URL = window.location.href.includes('dev') ? 'http://dev.com:9000' : 'https://marcinxkaminski.github.io/stay-alive-3d';
+export const BASE_URL = ['dev', 'localhost'].filter((host) => window.location.href.includes(host)) ? window.location.origin : 'https://marcinxkaminski.github.io/stay-alive-3d';
 
 export const LOCAL_STORAGE_USER_ID_KEY = 'stayaliveuseridkey';
 
@@ -61,6 +61,7 @@ export const GROUND = {
   RECEIVE_SHADOW: true,
   DISTORTION_VALUE: 0.14,
   COLOR: COLORS.LIGHT_GREEN,
+  TEXTURE_PATH: '../assets/ground/texture.png',
 };
 
 export const HERO = {
@@ -70,11 +71,9 @@ export const HERO = {
   SCALE: 0.08,
   CAST_SHADOW: true,
   RECEIVE_SHADOW: true,
-  RUN_ANIMATION_NUMBER: 1,
-  PLAY_RUN_ANIMATION: true,
   // eslint-disable-next-line no-mixed-operators
   ROTATION_Y: 180 * Math.PI / 180,
-  URL: '../assets/hero/hero.gltf',
+  MODEL_PATH: '../assets/hero/hero.gltf',
 };
 
 export const ROCK = {
@@ -154,9 +153,10 @@ export const ANIMATION = {
   ADD_GROUND_THRESHOLD: 50,
   NO_GRAVITY_MULTIPLIER: 1,
   COLLISION_TIMEOUT_MS: 350,
+  DEAD_ANIMATION_TIMEOUT: 150,
+  HERO_CHANGE_LANE_SPEED: 0.1,
   RUN_SPEED_INCREMENT: 0.00001,
   JUMP_GRAVITY_MULTIPLIER: 0.2,
-  HERO_CHANGE_LANE_SPEED: 0.1,
   OBSTACLES_UPDATE_INTERVAL: 1,
   GO_DOWN_GRAVITY_MULTIPLIER: 2,
 };
@@ -169,6 +169,7 @@ export const SCORE = {
   LIFES_DECREASE_VALUE: 1,
   VALUE_DOM_ELEMENT_ID: 'current-score-value',
   LIFES_DOM_ELEMENT_ID: 'current-score-lifes',
+  GAME_OVER_DOM_ELEMENT_ID: 'game-over-message',
 };
 
 export const OBSTACLES = {

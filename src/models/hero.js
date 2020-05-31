@@ -1,34 +1,32 @@
 import { AnimationMixer } from 'three';
-
-import { loadModelFromUrl } from '../utils/model-loader-util';
+import { loadModelFromUrl } from '../utils/gltf-loader-util';
 import { HERO } from '../config';
 
 export default async () => {
-  const heroModelUrl = HERO.URL;
-  const gltf = await loadModelFromUrl(heroModelUrl);
-  const hero = { gltf };
+  const gltf = await loadModelFromUrl(HERO.MODEL_PATH);
+  const { scene } = gltf;
+  const mixer = new AnimationMixer(scene);
+  const animations = gltf.animations.reduce((acc, a) => ({
+    ...acc,
+    [a.name]: mixer.clipAction(a, scene.children[0]),
+  }), {});
 
-  if (HERO.PLAY_RUN_ANIMATION) {
-    hero.mixer = new AnimationMixer(gltf.scene);
-    const action = hero.mixer.clipAction(
-      gltf.animations[HERO.RUN_ANIMATION_NUMBER],
-      gltf.scene.children[0],
-    );
-    action.enabled = HERO.PLAY_RUN_ANIMATION;
-    action.play();
-  }
+  // eslint-disable-next-line no-underscore-dangle
+  animations.Run_swordAttack._clip.duration *= 2;
+  animations.Run_swordAttack.timeScale = 0.3;
+  animations.Run_swordAttack.repetitions = 1;
+  animations.Roll_sword.timeScale = 2;
+  animations.Roll_sword.repetitions = 1;
 
-  gltf.scene.rotateY(HERO.ROTATION_Y);
-  gltf.scene.scale.set(HERO.SCALE, HERO.SCALE, HERO.SCALE);
-  gltf.scene.position.set(HERO.X, HERO.Y, HERO.Z);
-
-  gltf.scene.castShadow = HERO.CAST_SHADOW;
-  gltf.scene.receiveShadow = HERO.RECEIVE_SHADOW;
-
-  gltf.scene.children.forEach((c) => {
+  scene.rotateY(HERO.ROTATION_Y);
+  scene.castShadow = HERO.CAST_SHADOW;
+  scene.receiveShadow = HERO.RECEIVE_SHADOW;
+  scene.position.set(HERO.X, HERO.Y, HERO.Z);
+  scene.scale.set(HERO.SCALE, HERO.SCALE, HERO.SCALE);
+  scene.children.forEach((c) => {
     c.castShadow = HERO.CAST_SHADOW;
     c.receiveShadow = HERO.RECEIVE_SHADOW;
   });
 
-  return hero;
+  return { scene, mixer, animations };
 };

@@ -41,7 +41,7 @@ module.exports = {
         template: path.join(__dirname, './src/templates/score.html'),
       }),
       new HtmlWebpackPlugin({
-        chunks: ['game', 'index'],
+        chunks: ['game'],
         filename: 'game/index.html',
         scriptLoading: 'defer',
         template: path.join(__dirname, './src/templates/game.html'),
