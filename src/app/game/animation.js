@@ -62,7 +62,9 @@ export const heroAnimation = async (controller, hero, timeDelta) => {
     if (!controller.canJump && !animationState.isPerformingHeroRoll) {
       animationState.isPerformingHeroRoll = true;
       animationState.heroAnimationName = await playAnimationOnce(hero.animations.Roll_sword);
-      animationState.heroAnimationName = switchAnimation(hero.animations.Roll_sword, hero.animations.Run, true);
+      animationState.heroAnimationName = switchAnimation(
+        hero.animations.Roll_sword, hero.animations.Run, true,
+      );
     } else {
       animationState.isPerformingHeroRoll = false;
     }
