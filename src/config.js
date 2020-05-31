@@ -1,4 +1,4 @@
-export const BASE_URL = ['dev', 'localhost'].filter((host) => window.location.href.includes(host)) ? window.location.origin : 'https://marcinxkaminski.github.io/stay-alive-3d';
+export const BASE_URL = window.location.href.includes('dev') ? 'http://dev.com:9000' : 'https://marcinxkaminski.github.io/stay-alive-3d';
 
 export const LOCAL_STORAGE_USER_ID_KEY = 'stayaliveuseridkey';
 
