@@ -1,5 +1,6 @@
 # Stay Alive 3D
-## [DEMO](https://marcinxkaminski.github.io/stay-alive-3d)
+**[DEMO](https://marcinxkaminski.github.io/stay-alive-3d)**
+
 Simple 3D game made with Three.js
 
 ![Build & Deploy](https://github.com/marcinxkaminski/stay-alive-3d/workflows/Build%20&%20Deploy/badge.svg)
