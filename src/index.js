@@ -15,5 +15,5 @@ import { redirectOnSameSite } from './utils/window-util';
   //   return !isSignedIn ? redirectOnSameSite(ROUTES.AUTH) : null;
   // }
 
-  return redirectOnSameSite(ROUTES.SCORE);
+  return redirectOnSameSite(ROUTES.GAME);
 })();
