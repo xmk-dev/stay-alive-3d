@@ -1,5 +1,5 @@
 # Stay Alive 3D
-**[DEMO](https://kmsnx.github.io/stay-alive-3d)**
+**[DEMO](https://kmsnx.github.io/stay-alive-3d/game)**
 
 Simple 3D game made with Three.js
 
