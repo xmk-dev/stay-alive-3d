@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/marcinxkaminski/stay-alive-3d.git"
+    "url": "git+https://github.com/kmsnx/stay-alive-3d.git"
   },
   "keywords": [
     "three.js",
@@ -29,9 +29,9 @@
   "author": "Marcin Kamiński",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/marcinxkaminski/stay-alive-3d/issues"
+    "url": "https://github.com/kmsnx/stay-alive-3d/issues"
   },
-  "homepage": "https://github.com/marcinxkaminski/stay-alive-3d#readme",
+  "homepage": "https://github.com/kmsnx/stay-alive-3d#readme",
   "devDependencies": {
     "compression-webpack-plugin": "^3.1.0",
     "css-loader": "^3.5.3",

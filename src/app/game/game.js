@@ -1,23 +1,26 @@
 import {
-  GAME_DOM_ELEMENT_ID, OBSTACLES, ROUTES, LOCAL_STORAGE_USER_ID_KEY,
-} from '../../config';
-import createResizeHandler from '../../utils/resize-handler-util';
-import { createObstacles } from './obstacles';
-import { runAnimationLoop } from './animation';
-import createController from './controller';
-import createGround from '../../models/ground';
-import createRenderer from './renderer';
-import createHero from '../../models/hero';
-import createRock from '../../models/rock';
-import createTree from '../../models/tree';
-import createCamera from './camera';
-import createLights from './lights';
-import createScene from './scene';
-import createClock from './clock';
-import createScore from './score';
+  GAME_DOM_ELEMENT_ID,
+  OBSTACLES,
+  ROUTES,
+  LOCAL_STORAGE_USER_ID_KEY,
+} from "../../config";
+import createResizeHandler from "../../utils/resize-handler-util";
+import { createObstacles } from "./obstacles";
+import { runAnimationLoop } from "./animation";
+import createController from "./controller";
+import createGround from "../../models/ground";
+import createRenderer from "./renderer";
+import createHero from "../../models/hero";
+import createRock from "../../models/rock";
+import createTree from "../../models/tree";
+import createCamera from "./camera";
+import createLights from "./lights";
+import createScene from "./scene";
+import createClock from "./clock";
+import createScore from "./score";
 
-import { redirectOnSameSite } from '../../utils/window-util';
-import { saveScore } from '../../api/score-api';
+import { redirectOnSameSite } from "../../utils/window-util";
+import { saveScore } from "../../api/score-api";
 
 export const init = async (root) => {
   const clock = createClock();
@@ -48,7 +51,11 @@ export const init = async (root) => {
 
 export const endGame = async (scoreValue) => {
   const id = localStorage.getItem(LOCAL_STORAGE_USER_ID_KEY);
-  await saveScore(id, scoreValue);
+
+  if (id) {
+    await saveScore(id, scoreValue);
+  }
+
   redirectOnSameSite(ROUTES.SCORE);
 };
 

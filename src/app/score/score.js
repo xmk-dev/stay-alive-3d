@@ -17,7 +17,7 @@ export const initScores = async () => {
   let scoreValue;
   let highestScoreValue;
   try {
-    const { lastScore, maxScore } = await getScores(id);
+    const { lastScore, maxScore } = id ? await getScores(id) : {};
     scoreValue = lastScore;
     highestScoreValue = maxScore;
   } catch (err) {

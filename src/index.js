@@ -7,13 +7,13 @@ import { redirectOnSameSite } from './utils/window-util';
   const isSignedIn = !!localStorage.getItem('stayaliveuseridkey');
   const path = window.location.pathname;
 
-  if (path.includes(ROUTES.AUTH)) {
-    return !isSignedIn ? null : redirectOnSameSite(ROUTES.SCORE);
-  }
+  // if (path.includes(ROUTES.AUTH)) {
+  //   return !isSignedIn ? null : redirectOnSameSite(ROUTES.SCORE);
+  // }
 
-  if (path.includes(ROUTES.SCORE) || path.includes(ROUTES.GAME)) {
-    return !isSignedIn ? redirectOnSameSite(ROUTES.AUTH) : null;
-  }
+  // if (path.includes(ROUTES.SCORE) || path.includes(ROUTES.GAME)) {
+  //   return !isSignedIn ? redirectOnSameSite(ROUTES.AUTH) : null;
+  // }
 
-  return redirectOnSameSite(ROUTES.AUTH);
+  return redirectOnSameSite(ROUTES.SCORE);
 })();
